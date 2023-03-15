@@ -1,0 +1,17 @@
+{
+  "name": "hotelcalifornia",
+  "version": "1.0.0",
+  "description": "Hotel California is a project aimed at creating a website specifically for the hotel industry, enabling customers to easily search for and book accommodations. This platform provides a hassle-free way for guests to learn more about the hotel's location, available services, and policies.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "Ashraf Hammoud, Ryan Shaw, Hadi Noureddine, and Rueben Hodges",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.21"
+  }
+}
