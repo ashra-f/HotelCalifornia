@@ -1,0 +1,39 @@
+body {
+  font-size: 14px;
+  font-family: "Libre Baskerville", serif;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Login Styling */
+.login-container {
+  margin: 0 auto;
+  width: 450px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.form-group label {
+  text-align: start !important;
+  font-weight: bold;
+}
+
+.card {
+  color: #fff;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: rgba(0, 0, 0, 0.76) 0px 22px 70px 4px;
+}
+
+p {
+  margin: 10px 0 !important;
+}
+
+/* Home Page Styling */

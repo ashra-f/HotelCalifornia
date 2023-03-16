@@ -1,0 +1,69 @@
+{{! Hotel Cali Description }}
+<div class="section mb-4">
+  <h3>
+    <i class="fas fa-solid fa-hotel d-block pb-2"></i>
+    Hotel California
+  </h3>
+  <p class="lead">Log In to Begin</p>
+</div>
+
+{{! Google Login }}
+<div class="section">
+  <a class="btn btn-outline-light" href="/auth/google">
+    <img
+      width="20px"
+      style="margin-bottom:3px; margin-right:5px"
+      alt="Google Login"
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+    />
+    Continue with Google
+  </a>
+</div>
+
+{{! Divider }}
+<hr class="hr mb-4 mt-4" />
+
+{{! Login Form }}
+<div class="section mb-4">
+  <form action="">
+    {{! Email }}
+    <div class="form-group">
+      <label for="InputEmail">Email address</label>
+      <input
+        type="email"
+        class="form-control"
+        id="InputEmail"
+        aria-describedby="emailHelp"
+        placeholder="Enter email"
+        name="email"
+      />
+
+    </div>
+
+    {{! Password }}
+    <div class="form-group">
+      <label for="InputPassword1">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="InputPassword1"
+        placeholder="Password"
+        name="password"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Submit</button>
+  </form>
+</div>
+
+{{! Footer }}
+<footer class="footer">
+  <p class="text-center">
+    Don't have an account?
+    <a href="/register">Register</a>
+  </p>
+  {{! Copyright }}
+  <p class="text-center">
+    &copy; 2023 Hotel California Inc.
+  </p>
+</footer>
