@@ -1,3 +1,7 @@
+html {
+  height: 100%;
+  background-color: #f2f2f2;
+}
 body {
   font-size: 14px;
   font-family: "Libre Baskerville", serif;
@@ -53,7 +57,7 @@ p {
   margin-left: -15em;
   border: 1px solid #666;
  */
-  height: 80%;
+  height: calc(100vh - 86px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,6 +68,17 @@ p {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 20px;
   border-radius: 4px;
+}
+
+.homepage-footer {
+  width: 100vw;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 /* .topnav {
