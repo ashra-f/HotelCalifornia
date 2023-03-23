@@ -28,9 +28,9 @@
 {{! Divider }}
 <hr class="hr mb-4 mt-4" />
 
-{{! Login Form }}
+{{! Register Form }}
 <div class="section mb-4">
-  <form class="register-form" action="">
+  <form class="register-form" action="/register" method="POST">
     {{! Email }}
     <div class="form-group">
       <label for="InputEmail">Email address</label>
@@ -66,6 +66,42 @@
         id="InputPassword2"
         name="password2"
         placeholder="Re-enter Password"
+      />
+    </div>
+
+    {{! First Name }}
+    <div class="form-group">
+      <label for="InputFirstName">First Name</label>
+      <input
+        type="firstname"
+        class="form-control"
+        id="InputFirstName"
+        name="firstname"
+        placeholder="First Name"
+      />
+    </div>
+
+    {{! Last Name }}
+    <div class="form-group">
+      <label for="InputLastName">Last Name</label>
+      <input
+        type="lastname"
+        class="form-control"
+        id="InputLastName"
+        name="lastname"
+        placeholder="Last Name"
+      />
+    </div>
+
+    {{! Phone Number }}
+    <div class="form-group">
+      <label for="InputPhoneNumber">Phone Number</label>
+      <input
+        type="phonenumber"
+        class="form-control"
+        id="InputPhoneNumber"
+        name="phonenumber"
+        placeholder="Phone Number"
       />
     </div>
 

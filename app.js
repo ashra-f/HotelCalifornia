@@ -1,19 +1,29 @@
 const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv");
+dotenv.config({ path: "./config/config.env" });
 const session = require("express-session");
 const morgan = require("morgan");
 const exphbs = require("express-handlebars");
-const connection = require("./config/db");
+const {
+  connection,
+  createTableCustomer,
+  dropTableCustomers,
+} = require("./config/db");
+const bodyParser = require("body-parser");
 
-dotenv.config({ path: "./config/config.env" });
-
+// Connect to database
 connection.connect((err) => {
   if (err) throw err;
-  console.log(`Connected to database on port ${process.env.DB_PORT}`);
+  console.log(`Connected to database on port 3306`);
 });
 
+// createTableCustomer();
+// dropTableCustomers();
+
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Logging
 if (process.env.NODE_ENV == "development") {

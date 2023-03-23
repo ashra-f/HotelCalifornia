@@ -1,21 +1,3 @@
-// const mongoose = require("mongoose");
-
-// const connectDB = async () => {
-//   try {
-//     const conn = await mongoose.connect(process.env.MONGO_URI, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true,
-//     });
-
-//     console.log(`MongoDB Connected: ${conn.connection.host}`);
-//   } catch (err) {
-//     console.error(err);
-//     process.exit(1);
-//   }
-// };
-
-// module.exports = connectDB;
-
 const mysql = require("mysql2");
 
 // Create Connection
@@ -24,7 +6,37 @@ const connection = mysql.createConnection({
   user: "ash",
   password: "Shampoo5=Feline=Darkness",
   database: "hotelcalifornia",
-  port: 3307, // update port number to 3307
 });
 
-module.exports = connection;
+// Create tables
+const createTableCustomer = () => {
+  var customerTable =
+    "CREATE TABLE IF NOT EXISTS table_name(email varchar(25),fname varchar(25),lname varchar(25),phone varchar(64) );";
+
+  connection.query(customerTable, function (err, result) {
+    if (err) {
+      console.log(err);
+    }
+    console.log("Table created");
+  });
+};
+
+const dropTableCustomers = () => {
+  var customerTable = "drop table IF EXISTS table_name";
+
+  connection.query(customerTable, function (err, result) {
+    if (err) {
+      console.log(err);
+      console.log("table does not exist");
+    }
+    console.log("table dropped");
+  });
+};
+
+// todo add create reservation
+//check if room is reserved
+// todo add rooms
+// todo amenities
+// todo reservations
+
+module.exports = { connection, createTableCustomer, dropTableCustomers };
