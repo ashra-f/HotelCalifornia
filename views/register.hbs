@@ -13,7 +13,7 @@
 </div>
 
 {{! Google Login }}
-<div class="section">
+{{! <div class="section">
   <a class="btn btn-outline-light" href="/auth/google">
     <img
       width="20px"
@@ -23,7 +23,7 @@
     />
     Continue with Google
   </a>
-</div>
+</div> }}
 
 {{! Divider }}
 <hr class="hr mb-4 mt-4" />
@@ -31,6 +31,39 @@
 {{! Register Form }}
 <div class="section mb-4">
   <form class="register-form" action="/register" method="POST">
+
+    {{! First and Last Name }}
+    <div class="row">
+      <div class="col-md-6">
+        {{! First Name }}
+        <div class="form-group">
+          <label for="InputFirstName">First Name</label>
+          <input
+            type="firstname"
+            class="form-control"
+            id="InputFirstName"
+            name="firstname"
+            placeholder="First Name"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        {{! Last Name }}
+        <div class="form-group">
+          <label for="InputLastName">Last Name</label>
+          <input
+            type="lastname"
+            class="form-control"
+            id="InputLastName"
+            name="lastname"
+            placeholder="Last Name"
+          />
+        </div>
+      </div>
+
+    </div>
+
     {{! Email }}
     <div class="form-group">
       <label for="InputEmail">Email address</label>
@@ -45,54 +78,6 @@
 
     </div>
 
-    {{! Password }}
-    <div class="form-group">
-      <label for="InputPassword1">Password</label>
-      <input
-        type="password"
-        class="form-control"
-        id="InputPassword1"
-        name="password1"
-        placeholder="Password"
-      />
-    </div>
-
-    {{! Re-enter Password }}
-    <div class="form-group">
-      <label for="InputPassword2">Password</label>
-      <input
-        type="password"
-        class="form-control"
-        id="InputPassword2"
-        name="password2"
-        placeholder="Re-enter Password"
-      />
-    </div>
-
-    {{! First Name }}
-    <div class="form-group">
-      <label for="InputFirstName">First Name</label>
-      <input
-        type="firstname"
-        class="form-control"
-        id="InputFirstName"
-        name="firstname"
-        placeholder="First Name"
-      />
-    </div>
-
-    {{! Last Name }}
-    <div class="form-group">
-      <label for="InputLastName">Last Name</label>
-      <input
-        type="lastname"
-        class="form-control"
-        id="InputLastName"
-        name="lastname"
-        placeholder="Last Name"
-      />
-    </div>
-
     {{! Phone Number }}
     <div class="form-group">
       <label for="InputPhoneNumber">Phone Number</label>
@@ -103,6 +88,37 @@
         name="phonenumber"
         placeholder="Phone Number"
       />
+    </div>
+
+    {{! Passwords }}
+    <div class="row">
+      <div class="col-md-6">
+        {{! Password }}
+        <div class="form-group">
+          <label for="InputPassword1">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="InputPassword1"
+            name="password1"
+            placeholder="Password"
+          />
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        {{! Re-enter Password }}
+        <div class="form-group">
+          <label for="InputPassword2">Re-enter Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="InputPassword2"
+            name="password2"
+            placeholder="Password"
+          />
+        </div>
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary w-100">Submit</button>

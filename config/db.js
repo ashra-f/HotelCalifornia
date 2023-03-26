@@ -10,7 +10,7 @@ const connection = mysql.createConnection({
 
 // Create tables
 const createTableCustomer = () => {
-  var customerTable =
+  let customerTable =
     "CREATE TABLE IF NOT EXISTS table_name(email varchar(25),fname varchar(25),lname varchar(25),phone varchar(64) );";
 
   connection.query(customerTable, function (err, result) {
@@ -22,7 +22,7 @@ const createTableCustomer = () => {
 };
 
 const dropTableCustomers = () => {
-  var customerTable = "drop table IF EXISTS table_name";
+  let customerTable = "drop table IF EXISTS table_name";
 
   connection.query(customerTable, function (err, result) {
     if (err) {
@@ -34,7 +34,7 @@ const dropTableCustomers = () => {
 };
 
 // todo add create reservation
-//check if room is reserved
+// check if room is reserved
 // todo add rooms
 // todo amenities
 // todo reservations

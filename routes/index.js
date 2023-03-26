@@ -25,6 +25,15 @@ router.get("/register", (req, res) => {
   });
 });
 
+// @desc        Search For Rooms
+// @route       GET /search
+router.get("/search", (req, res) => {
+  // query database for rooms
+
+  // render page
+  res.render("rooms");
+});
+
 // @desc        Process Register Form
 // @route       POST /register
 router.post("/register", async (req, res) => {
