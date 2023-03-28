@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 // @desc        Landing Page
 // @route       GET /
 router.get("/", (req, res) => {
-  res.render("home");
+  res.render("home", { session: req.session });
 });
 
 // @desc        Login
@@ -15,6 +15,54 @@ router.get("/login", (req, res) => {
   res.render("login", {
     layout: "login",
   });
+});
+
+// @desc        Process Login Form
+// @route       POST /register
+router.post("/login", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+
+  // get customer info from database using email
+  let sql = `SELECT * FROM customers WHERE email='${email}';`;
+
+  connection.query(sql, function (err, result) {
+    if (err) console.log(err);
+
+    // Returns user to the home screen if email does not exist
+    if (result.size == 0) {
+      console.log("no user found");
+      return res.render("/login");
+    }
+
+    // Compare the user-entered password with the stored hashed password
+    bcrypt.compare(password, result[0]["password"], function (err, result) {
+      if (err) {
+        // Handle the error
+        console.log(err);
+      } else if (result) {
+        // Passwords match, allow user to log in
+        console.log("logged in successfully");
+
+        // TODO: create session
+        let session = req.session;
+        session.email = email;
+
+        return res.redirect("/");
+      } else {
+        // Passwords do not match, deny access
+        console.log("passwords do not match");
+        return res.redirect("/login");
+      }
+    }); // end of bcrypt compare
+  }); // end of sql query command
+}); // end of login form post
+
+// @desc        Logout
+// @route       GET /logout
+router.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
 });
 
 // @desc        Register
@@ -37,12 +85,12 @@ router.get("/search", (req, res) => {
 // @desc        Process Register Form
 // @route       POST /register
 router.post("/register", async (req, res) => {
-  var email = req.body.email;
-  var password1 = req.body.password1;
-  var password2 = req.body.password2;
-  var firstname = req.body.firstname;
-  var lastname = req.body.lastname;
-  var phonenumber = req.body.phonenumber;
+  let email = req.body.email;
+  let password1 = req.body.password1;
+  let password2 = req.body.password2;
+  let firstname = req.body.firstname;
+  let lastname = req.body.lastname;
+  let phonenumber = req.body.phonenumber;
 
   // Redirects back to register page if email is already in use
   if (checkUsedEmails(email)) {
@@ -60,7 +108,7 @@ router.post("/register", async (req, res) => {
   // Hash the password using the salt
   const hashedPassword = await bcrypt.hash(password1, salt);
 
-  var sql = generateRegisterCmd(
+  let sql = generateRegisterCmd(
     email,
     hashedPassword,
     firstname,
@@ -85,7 +133,7 @@ const generateRegisterCmd = (email, password, fname, lname, phone) =>
 const signUpPasswords = (password1, password2) => password1 === password2;
 
 const checkUsedEmails = (email) => {
-  var sql = `SELECT COUNT(*) AS EmailCount FROM customers WHERE email='${email}'`;
+  let sql = `SELECT COUNT(*) AS EmailCount FROM customers WHERE email='${email}'`;
 
   connection.query(sql, function (err, result) {
     if (err) console.log(err);

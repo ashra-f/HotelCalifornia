@@ -3,6 +3,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config/config.env" });
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const {
@@ -34,14 +35,20 @@ if (process.env.NODE_ENV == "development") {
 app.engine(".hbs", exphbs.engine({ defaultLayout: "main", extname: ".hbs" }));
 app.set("view engine", ".hbs");
 
+const oneDay = 1000 * 60 * 60 * 24;
+
 // Sessions
 app.use(
   session({
     secret: "flying dolphin agent 47",
     resave: false,
-    saveUninitialized: false,
+    cookie: { maxAge: oneDay },
+    saveUninitialized: true,
   })
 );
+
+// Cookie Parser
+app.use(cookieParser());
 
 // Static folder
 app.use(express.static(path.join(__dirname, "public")));
