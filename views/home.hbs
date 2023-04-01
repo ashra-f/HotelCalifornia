@@ -1,65 +1,76 @@
-<div class="container" id="body-container">
-
-  {{! Search Form }}
-  <section class="search-form-section">
-    <form class="search-form m-0" action="/search" method="GET">
-
-      <div class="row mb-2">
-        <div class="col-md-12">
-          <h5>Explore Our Room Options:</h5>
+<!-- Hero Section Begin -->
+<section class="hero-section" id="body-container">
+  <div class="my-container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="hero-text">
+          <h1>Hotel California</h1>
+          <p>Indulge in pure luxury and unparalleled sophistication at our
+            exquisite hotel.</p>
+          <a
+            href="/register"
+            class="btn btn-primary btn-lg active discover-btn"
+            role="button"
+            aria-pressed="true"
+          >Discover Now</a>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-md-4">
-          {{! Check In Date }}
-          <div class="form-group">
-            <label for="check-in-date">Check-in date:</label>
-            <input
-              type="date"
-              id="check-in-date"
-              class="form-control"
-              name="check_in_date"
-              required
-            />
-
-          </div>
-        </div>
-        <div class="col-md-4">
-          {{! Check Out Date }}
-          <div class="form-group">
-            <label for="check-out-date">Check-out date:</label>
-            <input
-              type="date"
-              id="check-out-date"
-              class="form-control"
-              name="check_out_date"
-              required
-            />
-          </div>
-        </div>
-        <div class="col-md-2">
-          {{! Guests Amount }}
-          <div class="form-group">
-            <label for="num-guests">Guests:</label>
-            <input
-              type="number"
-              id="num-guests"
-              class="form-control"
-              name="num_guests"
-              min="1"
-              max="10"
-              value="1"
-              required
-            />
-          </div>
-        </div>
-        <div class="col-md-2 d-flex align-items-center">
-          {{! Submit }}
-          <button type="submit" class="btn btn-primary">Search</button>
+      <div class="col-xl-4 col-lg-5 offset-xl-2 offset-lg-1">
+        <div class="booking-form">
+          <h3 class="text-center">Explore Our Rooms</h3>
+          <form class="m-0" action="/search" method="GET">
+            {{! Check In Date }}
+            <div class="check-date">
+              <label for="date-in">Check In:</label>
+              <input
+                type="date"
+                id="date-in"
+                class="date-input m-0 p-3"
+                name="check_in_date"
+                required
+              />
+            </div>
+            {{! Check Out Date }}
+            <div class="check-date">
+              <label for="date-out">Check Out:</label>
+              <input
+                type="date"
+                id="date-out"
+                class="date-input m-0 p-3"
+                name="check_out_date"
+                required
+              />
+            </div>
+            {{! Num Guests }}
+            <div class="select-option">
+              <label for="guest">Guests:</label>
+              <select id="guest" name="num_guests">
+                <option value="1">1 Adult</option>
+                <option value="2-4">2 - 4 Adults</option>
+                <option value="5-7">5 - 7 Adults</option>
+                <option value="8+">8+ Adults</option>
+              </select>
+            </div>
+            {{! Num Rooms }}
+            <div class="select-option">
+              <label for="room">Room:</label>
+              <select id="room" name="num_rooms">
+                <option value="1">1 Room</option>
+                <option value="2">2 Rooms</option>
+                <option value="3">3 Rooms</option>
+                <option value="4+">4+ Rooms</option>
+              </select>
+            </div>
+            <button type="submit">Check Availability</button>
+          </form>
         </div>
       </div>
-
-    </form>
-  </section>
-</div>
+    </div>
+  </div>
+  <div class="owl-carousel hero-slider">
+    <div><img src="imgs/hero1.jpg" /></div>
+    <div><img src="imgs/hero2.jpg" /></div>
+    <div><img src="imgs/hero3.jpg" /></div>
+  </div>
+</section>
+<!-- Hero Section End -->

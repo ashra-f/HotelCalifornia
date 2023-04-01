@@ -1,14 +1,33 @@
-html {
-  height: 100%;
-  background-color: #f2f2f2;
-}
+html,
 body {
   font-size: 14px;
-  font-family: "Libre Baskerville", serif;
   height: 100%;
+  font-family: "Cabin", sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
-  user-select: none;
+  color: #111111;
+  font-weight: 400;
+  font-family: "Lora", serif;
+}
+
+p {
+  font-size: 16px;
+  font-family: "Cabin", sans-serif;
+  color: #6b6b6b;
+  font-weight: 400;
+  line-height: 26px;
+  margin: 0 0 15px 0;
+}
+
+img {
+  max-width: 100%;
 }
 
 /* Login Styling */
@@ -31,7 +50,6 @@ body {
 }
 
 .card {
-  /* height: 500px; */
   color: #fff;
   padding: 30px;
   background: rgba(0, 0, 0, 0.8);
@@ -39,14 +57,19 @@ body {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
-p {
-  margin: 10px 0 !important;
+.mt-4 a {
+  background-color: #0874dc;
+  border: 1px solid #0874dc;
+}
+
+.mt-4 a:hover {
+  background-color: #055fb5;
+  border: 1px solid #055fb5;
 }
 
 /* Home Page Styling */
-
 .navbar {
-  background-color: #f2f2f2 !important;
+  background-color: #ffffff !important;
 }
 
 #body-container {
@@ -55,7 +78,30 @@ p {
   justify-content: center;
   align-items: center;
   color: white;
+  margin: 0 auto;
+  width: 100vw !important;
   /* overflow: scroll; */
+}
+
+.discover-btn {
+  background-color: #0874dc;
+  border: 1px solid #0874dc;
+}
+
+.discover-btn:hover {
+  background-color: #024c91;
+  border: 1px solid #024c91;
+}
+
+.nav-link {
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+.nav-link:hover {
+  /* Blue underline */
+  border-bottom: 2px solid #0874dc;
 }
 
 .search-form {
@@ -141,13 +187,13 @@ p {
   }
 }
 
-/* Some left and right padding inside the container */
-.container {
+/* Some left and right padding inside the my-container */
+.my-container {
   padding: 0 16px;
 }
 
 /* Clear floats */
-.container::after,
+.my-container::after,
 .row::after {
   content: "";
   clear: both;
@@ -172,4 +218,160 @@ p {
 
 .button:hover {
   background-color: #555;
+}
+
+/* HERO */
+.hero-section {
+  position: relative;
+  /* padding-top: 60px;
+  padding-bottom: 100px; */
+}
+.hero-section .my-container {
+  position: relative;
+  z-index: 5;
+}
+.hero-text {
+  padding-top: 145px;
+}
+.hero-text h1 {
+  font-size: 80px;
+  line-height: 90px;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+.hero-text p {
+  font-size: 18px;
+  color: #ffffff;
+  line-height: 28px;
+  margin-bottom: 35px;
+}
+.booking-form {
+  /* margin-top: 40px; */
+  height: 580px;
+  width: 370px;
+  background: #ffffff;
+  padding: 25px 40px 30px 40px !important;
+  border-radius: 4px;
+}
+.booking-form h3 {
+  color: #19191a;
+  margin-bottom: 36px;
+}
+.booking-form form .check-date {
+  position: relative;
+  margin-bottom: 15px;
+}
+.booking-form form .check-date label {
+  font-size: 14px;
+  color: #707079;
+  display: block;
+  margin-bottom: 10px;
+}
+.booking-form form .check-date input {
+  width: 100%;
+  height: 50px;
+  border: 1px solid #ebebeb;
+  border-radius: 2px;
+  font-size: 16px;
+  color: #19191a;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding-left: 20px;
+}
+.booking-form form .check-date i {
+  color: #0874dc;
+  position: absolute;
+  right: 18px;
+  bottom: 17px;
+}
+.booking-form form .select-option {
+  margin-bottom: 15px;
+}
+.booking-form form .select-option label {
+  font-size: 14px;
+  color: #707079;
+  display: block;
+  margin-bottom: 10px;
+}
+.booking-form form .select-option .nice-select {
+  color: #000;
+  border-radius: 2px;
+  border: 1px solid #ebebeb;
+  height: 50px;
+  line-height: 50px;
+  outline: none;
+  padding-left: 20px;
+  width: 100%;
+  float: none;
+}
+.booking-form form .select-option .nice-select:after {
+  border-bottom: 2px solid #0874dc;
+  border-right: 2px solid #0874dc;
+  height: 10px;
+  margin-top: 0;
+  right: 20px;
+  width: 10px;
+  top: 36%;
+}
+.booking-form form .select-option .nice-select span {
+  font-size: 16px;
+  color: #19191a;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.booking-form form .select-option .nice-select .list {
+  margin-top: 0;
+  width: 100%;
+}
+.booking-form form button {
+  display: block;
+  font-size: 14px;
+  text-transform: uppercase;
+  border: 1px solid #0874dc;
+  border-radius: 2px;
+  color: #0874dc;
+  font-weight: 500;
+  background: transparent;
+  width: 100%;
+  height: 46px;
+  margin-top: 30px;
+}
+.hero-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+.hero-slider.owl-carousel .owl-dots {
+  position: absolute;
+  left: 0;
+  bottom: 23px;
+  width: 100%;
+  text-align: center;
+}
+.hero-slider.owl-carousel .owl-dots button {
+  height: 6px;
+  width: 6px;
+  background: #ffffff;
+  opacity: 0.5;
+  border-radius: 50%;
+  margin-right: 10px;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.hero-slider.owl-carousel .owl-dots button.active {
+  width: 30px;
+  border-radius: 50px;
+  opacity: 1;
+}
+.hero-slider.owl-carousel .owl-dots button:last-child {
+  margin-right: 0;
+}
+.hero-slider .owl-stage-outer,
+.hero-slider .owl-stage,
+.hero-slider .owl-item,
+.hero-slider .hs-item {
+  height: 100%;
 }
