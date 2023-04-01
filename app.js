@@ -14,10 +14,10 @@ const {
 const bodyParser = require("body-parser");
 
 // Connect to database
-connection.connect((err) => {
-  if (err) throw err;
-  console.log(`Connected to database on port 3306`);
-});
+// connection.connect((err) => {
+//   if (err) throw err;
+//   console.log(`Connected to database on port 3306`);
+// });
 
 // createTableCustomer();
 // dropTableCustomers();
