@@ -31,10 +31,12 @@ body {
 }
 
 .card {
+  /* height: 500px; */
   color: #fff;
   padding: 30px;
   background: rgba(0, 0, 0, 0.8);
   box-shadow: rgba(0, 0, 0, 0.76) 0px 22px 70px 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 p {
@@ -53,6 +55,7 @@ p {
   justify-content: center;
   align-items: center;
   color: white;
+  /* overflow: scroll; */
 }
 
 .search-form {
@@ -122,7 +125,7 @@ p {
   display: block;
 }
 
-/* Three columns side by side */
+/* Room Reservation Styling */
 .column {
   float: left;
   width: 33.3%;
@@ -136,11 +139,6 @@ p {
     width: 100%;
     display: block;
   }
-}
-
-/* Add some shadows to create a card effect */
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 /* Some left and right padding inside the container */

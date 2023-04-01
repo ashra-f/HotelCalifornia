@@ -1,6 +1,6 @@
 <div class="container flex-column" id="body-container">
 
-  {{! Search Form }}
+  {{! Search }}
   {{!-- <section class="search-form-section">
     <form class="search-form m-0" action="/search" method="GET">
 
@@ -63,42 +63,83 @@
     </form>
   </section> --}}
 
+  {{! Results }}
   <div class="row">
-    <div class="column">
+    {{! Single }}
+    <div class="col-md-3">
       <div class="card">
-        <img src="single_room.png" alt="Jane" style="width:100%" />
+        <img src="imgs/single1-1.jpeg" alt="Single Bed" style="width:100%" />
         <div class="container">
-          <h2>Single Room</h2>
-          <p class="title">CEO &amp; Founder</p>
-          <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-          <p>example@example.com</p>
-          <p><button class="button">Contact</button></p>
+          <h2>Single</h2>
+          <p class="title">Single Room</p>
+          <p>Indulge in the ultimate comfort and relaxation in our luxurious
+            single bed room, featuring high-end amenities.</p>
+          <p>Starting from $199.99 a night.</p>
+          <ul class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="/pay">Book</a>
+              </li>
         </div>
       </div>
     </div>
 
-    <div class="column">
+    {{! Double }}
+    <div class="col-md-3">
       <div class="card">
-        <img src="imgs/hotel-title.png" alt="Mike" style="width:100%" />
+        <img src="imgs/double1-1.jpeg" alt="Double Bed" style="width:100%" />
         <div class="container">
           <h2>Double Bed</h2>
-          <p class="title">Art Director</p>
-          <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-          <p>example@example.com</p>
-          <p><button class="button">Contact</button></p>
+          <p class="title">Double Bed</p>
+          <p>Experience the height of luxury with our spacious double room,
+            complete with stylish decor and premium amenities.</p>
+          <p>Starting from $299.99 a night.</p>
+          <ul class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="/pay">Book</a>
+              </li>
         </div>
       </div>
     </div>
 
-    <div class="column">
+{{!
+SQL ROOM STATEMENT
+
+SELECT roomId, size, price_per_night, max_guests, availability
+FROM rooms
+WHERE roomId = ${roomId}
+}}
+
+
+    {{! Suite }}
+    <div class="col-md-3">
       <div class="card">
-        <img src="imgs/single_room.png" alt="John" style="width:100%" />
+        <img src="imgs/suite1-1.jpeg" alt="Suite" style="width:100%" />
         <div class="container">
           <h2>Suite</h2>
-          <p class="title">Designer</p>
-          <p>Some text that describes me lorem ipsum ipsum lorem.</p>
-          <p>example@example.com</p>
-          <p><button class="button">Contact</button></p>
+          <p class="title">Suite</p>
+          <p>Escape to pure luxury with our exquisite suite, featuring a
+            separate living area, and stunning views of the city</p>
+          <p>Starting from $399.99 a night</p>
+          <ul class="navbar-nav mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="/pay">Book</a>
+              </li>
+        </div>
+      </div>
+    </div>
+
+    {{! Conference }}
+    <div class="col-md-3">
+      <div class="card">
+        <img src="imgs/conference1-1.jpeg" alt="Double Bed" style="width:100%" />
+        <div class="container">
+          <h2>Conference </h2>
+          <p class="title">Conference</p>
+          <p>Reserve a professional conference room, complete with
+            state-of-the-art equipment and comfortable seating to ensure
+            success.</p>
+          <p>Starting from $299.99 a night.</p>
+          <p><button class="button" onclick="/pay">Book</button></p>
         </div>
       </div>
     </div>

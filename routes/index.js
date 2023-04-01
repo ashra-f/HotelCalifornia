@@ -65,6 +65,12 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+// @desc        Logout
+// @route       GET /logout
+router.get("/reservations", (req, res) => {
+  res.render("registration", {});
+});
+
 // @desc        Register
 // @route       GET /register
 router.get("/register", (req, res) => {
@@ -73,13 +79,40 @@ router.get("/register", (req, res) => {
   });
 });
 
+/*
+router.get("/rooms", (req, res) => {
+  res.render("pay", {
+    
+  });
+});
+*/
+
 // @desc        Search For Rooms
 // @route       GET /search
 router.get("/search", (req, res) => {
   // query database for rooms
+  let num_guests = req.query.num_guests;
+  let check_in = req.query.check_in_date;
+  let check_out = req.query.check_out_date;
+
+  let sql = `SELECT roomId, max_guests, availability
+                  FROM rooms
+                  WHERE max_guests >= ${num_guests} AND availability = "available";`;
+
+  let rooms;
+
+  connection.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      return res.redirect("/");
+    }
+
+    rooms = result;
+    // console.log(result);
+  }); // end connection
 
   // render page
-  res.render("rooms");
+  res.render("rooms", { rooms: rooms });
 });
 
 // @desc        Process Register Form
