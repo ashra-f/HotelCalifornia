@@ -1,13 +1,46 @@
-{{! Hotel Cali Description }}
-<div class="section mb-4">
-  <h3>
-    <a href="/">
-      <img
-        src="/imgs/hotel-logo-login.png"
-        alt="Hotel California"
-        height="80"
+<div class="container">
+    {{! Single }}
+    <div class="col-md-3">
+      <div class="card">
+        <img src="imgs/single1-1.jpeg" alt="Single Bed" style="width:100%" />
+        <div class="container">
+          <h2>Single</h2>
+          <p class="title">Single Room</p>
+          <p>Indulge in the ultimate comfort and relaxation in our luxurious
+            single bed room, featuring high-end amenities.</p>
+          <p>Starting from $199.99 a night.</p>
+        </div>
+      </div>
+    </div>
+    <div class="section mb-3">
+  <form action="/login" method="POST">
+    {{! Credit Card Number }}
+    <div class="form-group">
+      <label for="CardNumber">Credit Card Number</label>
+      <input
+        type="card"
+        class="form-control"
+        id="InputEmail"
+        aria-describedby="cardHelp"
+        placeholder="Enter Credit Card Number"
+        name="card"
       />
-    </a>
-  </h3>
-  {{! <p class="lead">Log In to Begin</p> }}
+
+    </div>
+
+    {{! Expiration Date }}
+    <div class="form-group">
+      <label for="ExpirationDate">Expiration Date</label>
+      <input
+        type="expiration"
+        class="form-control"
+        id="ExpirationDate"
+        placeholder="Expiration Date"
+        name="expiration"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Submit</button>
+  </form>
+</div>
 </div>

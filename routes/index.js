@@ -91,11 +91,17 @@ router.get("/search", (req, res) => {
   let check_in = req.query.check_in_date;
   let check_out = req.query.check_out_date;
 
-  let sql = `SELECT roomId, max_guests, availability
+  let sql = `SELECT rooms.*, GROUP_CONCAT(room_imgs.img_url SEPARATOR ', ') AS img_urls
                   FROM rooms
-                  WHERE max_guests >= ${num_guests} AND availability = "available";`;
+                  JOIN room_imgs ON rooms.roomId = room_imgs.roomId
+                  WHERE max_guests >= ${num_guests} AND availability = "available"
+                  GROUP BY rooms.roomId;`;
 
-  let rooms;
+  // let sql1 = `SELECT *
+  // FROM room_imgs AND rooms
+  // WHERE rooms.roomId = room_imgs.roomId`;
+
+  let roomsArr = [];
 
   connection.query(sql, function (err, result) {
     if (err) {
@@ -103,12 +109,17 @@ router.get("/search", (req, res) => {
       return res.redirect("/");
     }
 
-    rooms = result;
-    // console.log(result);
-  }); // end connection
+    roomsArr = result;
 
-  // render page
-  res.render("rooms", { rooms: rooms });
+    // Iterate over the rooms array and modify the img_urls property
+    roomsArr.forEach((room) => {
+      room.img_urls = room.img_urls.split(", ");
+    });
+
+    console.log(roomsArr);
+    // Render Page
+    res.render("rooms", { rooms: roomsArr });
+  }); // end connection
 });
 
 // @desc        Process Register Form

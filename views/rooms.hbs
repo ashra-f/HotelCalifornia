@@ -262,7 +262,50 @@ WHERE roomId = ${roomId}
     <div class="right results">
       {{! All Rooms }}
       <div class="list-group">
-        {{! Result 1 }}
+
+        {{! Getting room information from the database }}
+        {{#each rooms}}
+          <a
+            class="list-group-item list-group-item-action align-items-start flex-row"
+          >
+            {{! Image }}
+            <img
+            {{!-- very stupid syntax needed .[] crazy stuff, but fun - ryan --}}
+              src="imgs/{{this.img_urls.[0]}}"
+              alt="Single Bed"
+              height="175"
+              height="300"
+              class=""
+            />
+
+            {{! Room Info }}
+            <div class="container">
+              <h2>{{this.size}}</h2>
+              <p class="title">{{this.size}} Room</p>
+              <p>
+                {{this.description}}
+              </p>
+              <div class="row">
+                <div class="col-md-6">
+                  <p>Price per night {{this.price_per_night}}$.</p>
+                </div>
+                <div class="col-md-6 align-self-center">
+                  <button
+                    onclick="location.href='/book';"
+                    class="btn btn-primary btn-lg buy-btn"
+                    role="button"
+                    aria-pressed="true"
+                  >
+                    Book
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </a>
+        {{/each}}
+
+        {{!-- {{! Result 1 }}
         <a
           class="list-group-item list-group-item-action align-items-start flex-row"
         >
@@ -285,7 +328,7 @@ WHERE roomId = ${roomId}
             </p>
             <div class="row">
               <div class="col-md-6">
-                <p>Starting from $199.99 a night.</p>
+                <p>Starting from $50 a night.</p>
               </div>
               <div class="col-md-6 align-self-center">
                 <button
@@ -323,7 +366,7 @@ WHERE roomId = ${roomId}
               complete with stylish decor and premium amenities.</p>
             <div class="row">
               <div class="col-md-6">
-                <p>Starting from $299.99 a night.</p>
+                <p>Starting from $100.00 a night.</p>
               </div>
               <div class="col-md-6 align-self-center">
                 <button
@@ -361,7 +404,7 @@ WHERE roomId = ${roomId}
               separate living area, and stunning views of the city</p>
             <div class="row">
               <div class="col-md-6">
-                <p>Starting from $399.99 a night</p>
+                <p>Starting from $350.00 a night</p>
               </div>
               <div class="col-md-6 align-self-center">
                 <button
@@ -400,7 +443,7 @@ WHERE roomId = ${roomId}
               success.</p>
             <div class="row">
               <div class="col-md-6">
-                <p>Starting from $299.99 a night.</p>
+                <p>Starting from $600.00 a night.</p>
               </div>
               <div class="col-md-6 align-self-center">
                 <button
@@ -415,7 +458,7 @@ WHERE roomId = ${roomId}
             </div>
           </div>
 
-        </a>
+        </a> --}}
       </div>
     </div>
   </div>
