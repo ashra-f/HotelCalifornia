@@ -67,7 +67,7 @@ router.get("/logout", (req, res) => {
 
 // @desc        Logout
 // @route       GET /logout
-router.get("/reservations", (req, res) => {
+router.get("/registration", (req, res) => {
   res.render("registration", {});
 });
 
@@ -79,13 +79,9 @@ router.get("/register", (req, res) => {
   });
 });
 
-/*
-router.get("/rooms", (req, res) => {
-  res.render("pay", {
-    
-  });
+router.get("/book", (req, res) => {
+  res.render("book", {});
 });
-*/
 
 // @desc        Search For Rooms
 // @route       GET /search
@@ -177,6 +173,62 @@ const checkUsedEmails = (email) => {
     }
     return false;
   });
+};
+
+/*should return an array of all rooms with available ameneties in an array
+doesnt check if something is an array or not
+[i] [0,1,2,3,4,5,6,7] size = 8
+smoke,tv,wifi,minfridge,gym,pets,breakfast
+test[0,1,0,1,0,1,0,1]
+test[1,1,0,0,0,0,0,0]
+amenetiesArray should contain only 0's or 1's to check for ameneties info, check helper for order*/
+const checkAvailableAmenities = (amenitiesArray) => {
+  let roomQuery = "";
+
+  for (let i = 0; i < amenitiesArray.length; i++) {
+    if (amenitiesArray[i] === 1) {
+      roomQuery += amenetiesHelper(i) + "1 AND ";
+    }
+  }
+
+  // Remove the trailing " AND " from the last amenity in the query
+  roomQuery = roomQuery.slice(0, -5);
+
+  //toast
+  console.log(roomQuery);
+
+  //note where is says availability = 1, expected inputs in room table: A room booked(true) = 1, A room Available(false) = 0
+  let sql = `SELECT amenities.smoke,amenities.tv,amenities.gym,amenities.free_wifi,amenities.minifridge,amenities.pets,amenities.breakfast,rooms.roomId,rooms.availability
+                  FROM amenities
+                  LEFT JOIN rooms ON rooms.roomId=amenities.roomId
+                  WHERE ${roomQuery} AND availability = 'available';`;
+
+  connection.query(sql, function (err, result) {
+    if (err) console.log(err);
+    console.log(result);
+    return false;
+  });
+}; // end of checkAvailbleAmenities
+
+const amenetiesHelper = (amenetiesNum) => {
+  switch (amenetiesNum) {
+    case 0:
+      return "amenities.smoke=";
+    case 1:
+      return "amenities.tv=";
+    case 2:
+      return "amenities.gym=";
+    case 3:
+      return "amenities.free_wifi=";
+    case 4:
+      return "amenities.minifridge=";
+    case 5:
+      return "amenities.gym=";
+    case 6:
+      return "amenities.pets=";
+    case 7:
+      return "amenities.breakfast=";
+  }
 };
 
 module.exports = router;

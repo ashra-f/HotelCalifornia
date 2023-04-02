@@ -64,7 +64,7 @@
   </section> --}}
 
   {{! Results }}
-  <div class="row">
+  {{!-- <div class="row">
     {{! Single }}
     <div class="col-md-3">
       <div class="card">
@@ -77,8 +77,10 @@
           <p>Starting from $199.99 a night.</p>
           <ul class="navbar-nav mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="/pay">Book</a>
+                <a href="/Book" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Book</a>
+            
               </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -95,8 +97,9 @@
           <p>Starting from $299.99 a night.</p>
           <ul class="navbar-nav mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="/pay">Book</a>
+               <a href="/Book" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Book</a>
               </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -122,8 +125,7 @@ WHERE roomId = ${roomId}
           <p>Starting from $399.99 a night</p>
           <ul class="navbar-nav mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="/pay">Book</a>
-              </li>
+            <a href="/Book" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Book</a>
         </div>
       </div>
     </div>
@@ -139,8 +141,281 @@ WHERE roomId = ${roomId}
             state-of-the-art equipment and comfortable seating to ensure
             success.</p>
           <p>Starting from $299.99 a night.</p>
-          <p><button class="button" onclick="/pay">Book</button></p>
+          <a href="/Book" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Book</a>
         </div>
+      </div>
+    </div>
+  </div> --}}
+
+  <div class="wrapper">
+    {{! Left Search }}
+    <div class="left search">
+      {{! Search Again }}
+      <form action="/search" method="GET" class="text-dark h-100">
+        <h2 class="mb-3">Discover <em>Your</em> Perfect Room</h2>
+        {{! Check-in }}
+        <div class="form-group">
+          <label for="check-in-date">Check-in date:</label>
+          <input
+            type="date"
+            id="check-in-date"
+            class="form-control"
+            name="check-in-date"
+            required
+          />
+        </div>
+
+        {{! Check-out }}
+        <div class="form-group">
+          <label for="check-out-date">Check-out date:</label>
+          <input
+            type="date"
+            id="check-out-date"
+            class="form-control"
+            name="check-out-date"
+            required
+          />
+        </div>
+
+        {{! Guests Amount }}
+        <div class="form-group">
+          <label for="num-guests">Guests:</label>
+          <input
+            type="number"
+            id="num-guests"
+            class="form-control"
+            name="num-guests"
+            min="1"
+            max="10"
+            value="1"
+            required
+          />
+        </div>
+
+        {{! Amenities Checkboxes }}
+        <div class="form-group">
+          <label for="amenities">Amenities:</label>
+
+          {{! Smoke }}
+          <label for="smoke">
+            <input type="checkbox" id="smoke" name="amenities" value="smoke" />
+            Smoke
+          </label>
+
+          {{! TV }}
+          <label for="tv">
+            <input type="checkbox" id="tv" name="amenities" value="tv" />
+            TV
+          </label>
+
+          <label for="wifi">
+            <input type="checkbox" id="wifi" name="amenities" value="wifi" />
+            Wifi
+          </label>
+
+          {{! Mini Fridge }}
+          <label for="minifridge">
+            <input
+              type="checkbox"
+              id="minifridge"
+              name="amenities"
+              value="minifridge"
+            />
+            Mini Fridge
+          </label>
+
+          {{! Gym }}
+          <label for="gym">
+            <input type="checkbox" id="gym" name="amenities" value="gym" />
+            Gym
+          </label>
+
+          {{! Pets }}
+          <label for="pets">
+            <input type="checkbox" id="pets" name="amenities" value="pets" />
+            Pets
+          </label>
+
+          {{! Breakfast }}
+          <label for="breakfast">
+            <input
+              type="checkbox"
+              id="breakfast"
+              name="amenities"
+              value="breakfast"
+            />
+            Breakfast
+          </label>
+        </div>
+
+        {{! Submit Button }}
+        <div class="form-group">
+          <button
+            type="submit"
+            class="btn btn-primary btn-block w-100"
+          >Search</button>
+        </div>
+      </form>
+    </div>
+
+    {{! Right Results }}
+    <div class="right results">
+      {{! All Rooms }}
+      <div class="list-group">
+        {{! Result 1 }}
+        <a
+          class="list-group-item list-group-item-action align-items-start flex-row"
+        >
+          {{! Image }}
+          <img
+            src="imgs/single1-1.jpeg"
+            alt="Single Bed"
+            height="175"
+            height="300"
+            class=""
+          />
+
+          {{! Room Info }}
+          <div class="container">
+            <h2>Single</h2>
+            <p class="title">Single Room</p>
+            <p>
+              Indulge in the ultimate comfort and relaxation in our luxurious
+              single bed room, featuring high-end amenities.
+            </p>
+            <div class="row">
+              <div class="col-md-6">
+                <p>Starting from $199.99 a night.</p>
+              </div>
+              <div class="col-md-6 align-self-center">
+                <button
+                  onclick="location.href='/book';"
+                  class="btn btn-primary btn-lg buy-btn"
+                  role="button"
+                  aria-pressed="true"
+                >
+                  Book
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </a>
+
+        {{! Result 2 }}
+        <a
+          class="list-group-item list-group-item-action align-items-start flex-row"
+        >
+          {{! Image }}
+          <img
+            src="imgs/double1-1.jpeg"
+            alt="Double Bed"
+            height="175"
+            height="300"
+            class=""
+          />
+
+          {{! Room Info }}
+          <div class="container">
+            <h2>Double Bed</h2>
+            <p class="title">Double Bed</p>
+            <p>Experience the height of luxury with our spacious double room,
+              complete with stylish decor and premium amenities.</p>
+            <div class="row">
+              <div class="col-md-6">
+                <p>Starting from $299.99 a night.</p>
+              </div>
+              <div class="col-md-6 align-self-center">
+                <button
+                  onclick="location.href='/book';"
+                  class="btn btn-primary btn-lg buy-btn"
+                  role="button"
+                  aria-pressed="true"
+                >
+                  Book
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </a>
+
+        {{! Result 3 }}
+        <a
+          class="list-group-item list-group-item-action align-items-start flex-row"
+        >
+          {{! Image }}
+          <img
+            src="imgs/suite1-1.jpeg"
+            alt="Suite"
+            height="175"
+            height="300"
+            class=""
+          />
+
+          {{! Room Info }}
+          <div class="container">
+            <h2>Suite</h2>
+            <p class="title">Suite</p>
+            <p>Escape to pure luxury with our exquisite suite, featuring a
+              separate living area, and stunning views of the city</p>
+            <div class="row">
+              <div class="col-md-6">
+                <p>Starting from $399.99 a night</p>
+              </div>
+              <div class="col-md-6 align-self-center">
+                <button
+                  onclick="location.href='/book';"
+                  class="btn btn-primary btn-lg buy-btn"
+                  role="button"
+                  aria-pressed="true"
+                >
+                  Book
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </a>
+
+        {{! Result 4 }}
+        <a
+          class="list-group-item list-group-item-action align-items-start flex-row"
+        >
+          {{! Image }}
+          <img
+            src="imgs/conference1-1.jpeg"
+            alt="Conference Room"
+            height="175"
+            height="300"
+            class=""
+          />
+
+          {{! Room Info }}
+          <div class="container">
+            <h2>Conference </h2>
+            <p class="title">Conference</p>
+            <p>Reserve a professional conference room, complete with
+              state-of-the-art equipment and comfortable seating to ensure
+              success.</p>
+            <div class="row">
+              <div class="col-md-6">
+                <p>Starting from $299.99 a night.</p>
+              </div>
+              <div class="col-md-6 align-self-center">
+                <button
+                  onclick="location.href='/book';"
+                  class="btn btn-primary btn-lg buy-btn"
+                  role="button"
+                  aria-pressed="true"
+                >
+                  Book
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </a>
       </div>
     </div>
   </div>
