@@ -1,46 +1,124 @@
-<div class="container">
-    {{! Single }}
-    <div class="col-md-3">
-      <div class="card">
-        <img src="imgs/single1-1.jpeg" alt="Single Bed" style="width:100%" />
-        <div class="container">
-          <h2>Single</h2>
-          <p class="title">Single Room</p>
-          <p>Indulge in the ultimate comfort and relaxation in our luxurious
-            single bed room, featuring high-end amenities.</p>
-          <p>Starting from $199.99 a night.</p>
+<section class="pay-section" id="body-container">
+  <div class="wrapper">
+    {{! Room Info: Left Side (even though it says right) }}
+    <div class="right m-3">
+      {{! Image }}
+      <img
+      {{!-- very stupid syntax needed .[] crazy stuff, but fun - ryanShawn --}}
+        src="imgs/{{room.img_urls.[0]}}"
+        alt="Single Bed"
+        height="300"
+        width="450"
+        class=""
+      />
+      <h2>{{room.size}}</h2>
+      <p class="">{{room.size}} Room</p>
+      <p>
+        {{room.description}}
+      </p>
+      <div class="row">
+        <div class="col-md-6">
+          <p>Price per night ${{room.price_per_night}}</p>
         </div>
       </div>
     </div>
-    <div class="section mb-3">
-  <form action="/login" method="POST">
-    {{! Credit Card Number }}
-    <div class="form-group">
-      <label for="CardNumber">Credit Card Number</label>
-      <input
-        type="card"
-        class="form-control"
-        id="InputEmail"
-        aria-describedby="cardHelp"
-        placeholder="Enter Credit Card Number"
-        name="card"
-      />
+    
+    {{! Pay Form: Right Side (even though it says left) }}
+    <div class="left m-3">
+      {{!-- Room Summary --}}
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Room Summary</h2>
+        </div>
+      </div>
 
+      {{!-- Room Type --}}
+      <div class="row">
+        <div class="col-md-12">
+          <p class="m-0 p-0">Room Type: {{room.size}}</p>
+        </div>
+      </div>
+
+      {{!-- Dates --}}
+      <div class="row">
+        <div class="col-md-12">
+          <p class="m-0 p-0">Check In: {{room.check_in}}</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <p class="m-0 p-0">Check Out: {{room.check_out}}</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-7">
+          <p class="m-0 p-0">Price per night: ${{room.price_per_night}}</p>
+        </div>
+        <div class="col-md-5">
+          <p class="m-0 p-0">Days: {{room.days}}</p>        
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <p>Price: ${{multiply room.price_per_night  room.days}}</p>        
+        </div>
+      </div>
+      <form class="pay-form" action="/process-pay" method="POST">
+        {{! First Name }}
+        <div class="form-group">
+          <label for="FirstName">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="FirstName"
+            placeholder="First Name"
+            name="firstname"
+          />
+        </div>
+        
+        {{! Last Name }}
+        <div class="form-group">
+          <label for="LastName">Last Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="LastName"
+            placeholder="Last Name"
+            name="lastname"
+          />
+        </div>
+
+        {{! Email }}
+        <div class="form-group">
+          <label for="InputEmail">Email address</label>
+          <input
+            type="email"
+            class="form-control"
+            id="InputEmail"
+            aria-describedby="emailHelp"
+            placeholder="Enter email"
+            name="email"
+          />
+        </div>
+
+        {{! Credit Card Number }}
+        <div class="form-group">
+          <label for="CardNumber">Credit Card Number</label>
+          <input
+            type="number"
+            class="form-control"
+            id="InputEmail"
+            aria-describedby="cardHelp"
+            placeholder="Credit Card Number"
+            name="card"
+          />
+        </div>
+
+        {{!-- Submit Button --}}
+        <button type="button" class="btn btn-primary btn-lg btn-block">Pay</button>
+      </form>
     </div>
-
-    {{! Expiration Date }}
-    <div class="form-group">
-      <label for="ExpirationDate">Expiration Date</label>
-      <input
-        type="expiration"
-        class="form-control"
-        id="ExpirationDate"
-        placeholder="Expiration Date"
-        name="expiration"
-      />
-    </div>
-
-    <button type="submit" class="btn btn-primary w-100">Submit</button>
-  </form>
-</div>
-</div>
+  </div>
+</section>

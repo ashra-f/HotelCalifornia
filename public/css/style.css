@@ -413,3 +413,7 @@ img {
   float: right;
   background-color: #0874dc !important;
 }
+
+.pay-form .form-group label {
+  color: rgb(0, 0, 0) !important;
+}

@@ -67,8 +67,8 @@ router.get("/logout", (req, res) => {
 
 // @desc        Logout
 // @route       GET /logout
-router.get("/registration", (req, res) => {
-  res.render("registration", {});
+router.get("/reservations", (req, res) => {
+  res.render("ManageReg");
 });
 
 // @desc        Register
@@ -80,8 +80,14 @@ router.get("/register", (req, res) => {
 });
 
 router.get("/book", (req, res) => {
-  res.render("book", {});
+  res.render("home", {});
 });
+
+// veri stuupiyd codey dont do anymore bad, but enjoyable --shawske ryan
+router.post("/book", (req, res) => {
+  res.render("book", {room: JSON.parse(req.body.roomInfo)});
+});
+
 
 // @desc        Search For Rooms
 // @route       GET /search
@@ -114,9 +120,19 @@ router.get("/search", (req, res) => {
     // Iterate over the rooms array and modify the img_urls property
     roomsArr.forEach((room) => {
       room.img_urls = room.img_urls.split(", ");
+
+      const startDate = new Date(check_in);
+      const endDate = new Date(check_out);
+
+      const timeDiff = endDate.getTime() - startDate.getTime();
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+
+      room.days = daysDiff;
+      room.check_in = check_in;
+      room.check_out = check_out;
     });
 
-    console.log(roomsArr);
+    // console.log(roomsArr);
     // Render Page
     res.render("rooms", { rooms: roomsArr });
   }); // end connection
@@ -167,6 +183,12 @@ router.post("/register", async (req, res) => {
   }); // end connection
 }); // end router post
 
+// @desc        Process Pay Form
+// @route       POST /process-pay
+router.post("/process-pay", async (req, res) => {
+
+});
+
 const generateRegisterCmd = (email, password, fname, lname, phone) =>
   `INSERT INTO customers (email, password, fname, lname, phone) VALUES ('${email}', '${password}', '${fname}', '${lname}', '${phone}')`;
 
@@ -216,7 +238,7 @@ const checkAvailableAmenities = (amenitiesArray) => {
 
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
-    console.log(result);
+    //console.log(result);
     return false;
   });
 }; // end of checkAvailbleAmenities
@@ -241,5 +263,30 @@ const amenetiesHelper = (amenetiesNum) => {
       return "amenities.breakfast=";
   }
 };
+//provides all reservations that are booked
+const reservationsList = (email) => {
+  let sql =`SELECT customers.email,customers.fname,customers.lname,customers.phone,reservations.roomid,reservations.status from customers LEFT JOIN reservations on customers.email=reservations.email  where customers.email ='${email}'`;
+  connection.query(sql, function (err, result) {
+    if (err) console.log(err);
+    return false;
+  });
+};
+const reserveRoom = (roomid,email) => {
+  let sql = `UPDATE reservations set status='booked' WHERE NOT status='booked' AND roomid = '${roomid}' AND email = '${email}';`;
 
+  connection.query(sql, function (err, result) {
+    if (err) console.log(err);
+    return false;
+    connection.up
+  });
+};
+const cancelRoom = (roomid,email) => {
+  let sql = `UPDATE reservations set status='cancelled' WHERE NOT status='cancelled' AND roomid = '${roomid}' AND email = '${email}';`;
+
+  connection.query(sql, function (err, result) {
+    if (err) console.log(err);
+    return false;
+    connection.up
+  });
+};
 module.exports = router;

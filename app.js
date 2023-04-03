@@ -6,21 +6,19 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const exphbs = require("express-handlebars");
+const bodyParser = require("body-parser");
+
 const {
   connection,
   createTableCustomer,
   dropTableCustomers,
 } = require("./config/db");
-const bodyParser = require("body-parser");
 
 // Connect to database
 connection.connect((err) => {
   if (err) throw err;
   console.log(`Connected to database on port 3306`);
 });
-
-// createTableCustomer();
-// dropTableCustomers();
 
 const app = express();
 
@@ -32,7 +30,19 @@ if (process.env.NODE_ENV == "development") {
 }
 
 // Handlebars
-app.engine(".hbs", exphbs.engine({ defaultLayout: "main", extname: ".hbs" }));
+const hbs = exphbs.create({ 
+  defaultLayout: "main", 
+  extname: ".hbs",
+  helpers: {
+    json: function(context) {
+      return JSON.stringify(context);
+    },
+    multiply: function(num1, num2) {
+      return num1 * num2;
+    }
+  }
+});
+app.engine(".hbs", hbs.engine);
 app.set("view engine", ".hbs");
 
 const oneDay = 1000 * 60 * 60 * 24;
