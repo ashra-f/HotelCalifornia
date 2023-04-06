@@ -1,0 +1,61 @@
+<section class="pay-section" id="body-container">
+  <div class="wrapper">
+    {{! Room Info: Left Side (even though it says right) }}
+    <div class="right m-3 w-100">
+      <h3 class="mb-3">Manage Active Reservations</h3>
+      <div class="list-group">
+        {{#each reservations}}
+          <a
+            class="list-group-item list-group-item-action align-items-start flex-row"
+          >
+            {{! Image }}
+            <img
+            {{!-- very stupid syntax needed .[] crazy stuff, but fun - ryan --}}
+              src="imgs/{{this.img_urls.[0]}}"
+              alt="Single Bed"
+              height="175"
+              width="250"
+              class=""
+            />
+
+            {{! Room Info }}
+            <div class="container">
+              <div class="row">
+                <div class="col-md-10">
+                <h2>{{this.size}} Room ({{this.stat}})</h2>
+                </div>
+                <div class="col-md-2">
+                  {{#if (eq this.stat "booked")}}
+                  <form action="/cancel-reservation" method="POST">
+                    <div class="form-group">
+                      <input type="hidden" name="roomId" value="{{this.roomId}}">
+                      <button type="submit" 
+                        class="btn btn-danger">Cancel</button>
+                    </div>
+                  </form>
+                  {{/if}}
+                </div>
+              </div>
+            
+              <p><span style="font-weight:bold;">{{this.email}}</span>  your reservation has been booked. See you soon!<p>
+                <p>Check In: {{this.check_in_date}}<p>
+                <p>Check Out: {{this.check_out_date}}<p>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <p>Total Price: ${{multiply this.price_per_night  this.days}}</p>
+                </div>
+              </div>
+            </div>
+
+          </a>
+        {{else}}
+          <h3>No Active Reservations</h3>
+          <a href="/">Find Your Next Stay!</a>
+        {{/each}}
+      </div>
+    </div>
+
+  
+  </div>
+</section>

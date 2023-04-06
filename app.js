@@ -22,12 +22,29 @@ connection.connect((err) => {
 
 const app = express();
 
+// Sessions
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(
+  session({
+    secret: "flying dolphin agent 47",
+    resave: false,
+    cookie: { maxAge: oneDay },
+    saveUninitialized: false,
+  })
+);
+
+// Middleware to make session data available to views
+app.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Logging
-if (process.env.NODE_ENV == "development") {
-  app.use(morgan("dev"));
-}
+// if (process.env.NODE_ENV == "development") {
+//   app.use(morgan("dev"));
+// }
 
 // Handlebars
 const hbs = exphbs.create({ 
@@ -39,23 +56,14 @@ const hbs = exphbs.create({
     },
     multiply: function(num1, num2) {
       return num1 * num2;
+    },
+    eq: function(a, b) {
+      return a === b;
     }
   }
 });
 app.engine(".hbs", hbs.engine);
 app.set("view engine", ".hbs");
-
-const oneDay = 1000 * 60 * 60 * 24;
-
-// Sessions
-app.use(
-  session({
-    secret: "flying dolphin agent 47",
-    resave: false,
-    cookie: { maxAge: oneDay },
-    saveUninitialized: true,
-  })
-);
 
 // Cookie Parser
 app.use(cookieParser());

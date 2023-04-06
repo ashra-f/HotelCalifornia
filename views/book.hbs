@@ -1,7 +1,7 @@
 <section class="pay-section" id="body-container">
   <div class="wrapper">
     {{! Room Info: Left Side (even though it says right) }}
-    <div class="right m-3">
+    <div class="right m-3" style="width: 75%;">
       {{! Image }}
       <img
       {{!-- very stupid syntax needed .[] crazy stuff, but fun - ryanShawn --}}
@@ -21,11 +21,7 @@
           <p>Price per night ${{room.price_per_night}}</p>
         </div>
       </div>
-    </div>
-    
-    {{! Pay Form: Right Side (even though it says left) }}
-    <div class="left m-3">
-      {{!-- Room Summary --}}
+            {{!-- Room Summary --}}
       <div class="row">
         <div class="col-md-12">
           <h2>Room Summary</h2>
@@ -51,7 +47,6 @@
           <p class="m-0 p-0">Check Out: {{room.check_out}}</p>
         </div>
       </div>
-
       <div class="row">
         <div class="col-md-7">
           <p class="m-0 p-0">Price per night: ${{room.price_per_night}}</p>
@@ -65,7 +60,27 @@
           <p>Price: ${{multiply room.price_per_night  room.days}}</p>        
         </div>
       </div>
+
+      {{!-- Amenities --}}
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Amenities</h2>
+        </div>
+      </div>
+    </div>
+    
+    {{! Pay Form: Right Side (even though it says left) }}
+    <div class="left m-3 h-100" style="width: 25%; overflow: scroll;">
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Payment Info</h2>
+        </div>
+      </div>
+      {{!-- Pay Form --}}
       <form class="pay-form" action="/process-pay" method="POST">
+        {{!-- Hidden RoomInfo --}}
+        <input type="hidden" name="roomInfo" value="{{json room}}">
+
         {{! First Name }}
         <div class="form-group">
           <label for="FirstName">First Name</label>
@@ -75,9 +90,10 @@
             id="FirstName"
             placeholder="First Name"
             name="firstname"
+            value="{{session.firstname}}"
           />
         </div>
-        
+
         {{! Last Name }}
         <div class="form-group">
           <label for="LastName">Last Name</label>
@@ -87,6 +103,7 @@
             id="LastName"
             placeholder="Last Name"
             name="lastname"
+            value="{{session.lastname}}"
           />
         </div>
 
@@ -100,6 +117,7 @@
             aria-describedby="emailHelp"
             placeholder="Enter email"
             name="email"
+            value="{{session.email}}"
           />
         </div>
 
@@ -109,16 +127,56 @@
           <input
             type="number"
             class="form-control"
-            id="InputEmail"
+            id="CardNumber"
             aria-describedby="cardHelp"
-            placeholder="Credit Card Number"
+            placeholder="xxxx-xxxx-xxxx-xxxx"
             name="card"
           />
         </div>
 
+        {{! Expiration Date }}
+        {{!-- <div class="form-group">
+          <label for="ExpDate">Expiration Date</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ExpDate"
+            placeholder="MM/YYYY"
+            name="expdate"
+          />
+        </div>
+
+        {{! CVV }}
+        <div class="form-group">
+          <label for="CVV">Security code</label>
+          <input
+            type="number"
+            class="form-control"
+            id="CVV"
+            placeholder="CVV"
+            name="cvv"
+          />
+        </div>
+
+        {{! Billing Address Zip Code }}
+        <div class="form-group">
+          <label for="ZipCode">Zip Code</label>
+          <input
+            type="number"
+            class="form-control"
+            id="ZipCode"
+            placeholder="Zip Code"
+            name="zip"
+          />
+        </div> --}}
+
         {{!-- Submit Button --}}
-        <button type="button" class="btn btn-primary btn-lg btn-block">Pay</button>
+        <div class="form-group">
+          <button type="submit" 
+            class="btn-block btn btn-primary btn-lg btn-block">Pay</button>
+        </div>
       </form>
+
     </div>
   </div>
 </section>

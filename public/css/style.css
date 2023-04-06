@@ -52,7 +52,7 @@ img {
 .card {
   color: #fff;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.93);
+  background: rgba(0, 0, 0, 0.9);
   box-shadow: rgba(0, 0, 0, 0.76) 0px 22px 70px 4px;
   box-shadow: 0 4px 8px 0 rgb(0, 0, 0);
 }
@@ -81,6 +81,11 @@ img {
   margin: 0 auto;
   width: 100vw !important;
   /* overflow: scroll; */
+}
+
+.join-footer,
+p {
+  color: white;
 }
 
 .discover-btn {
@@ -190,6 +195,10 @@ img {
 /* Some left and right padding inside the my-container */
 .my-container {
   padding: 0 16px;
+  /* height: 100%;
+  width: 65%;
+  display: flex;
+  align-items: center; */
 }
 
 /* Clear floats */
@@ -231,7 +240,7 @@ img {
   z-index: 5;
 }
 .hero-text {
-  padding-top: 145px;
+  /* padding-top: 145px; */
 }
 .hero-text h1 {
   font-size: 80px;
@@ -246,8 +255,7 @@ img {
   margin-bottom: 35px;
 }
 .booking-form {
-  /* margin-top: 40px; */
-  height: 580px;
+  height: auto;
   width: 370px;
   background: #ffffff;
   padding: 25px 40px 30px 40px !important;
@@ -382,12 +390,22 @@ img {
   height: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
+  padding: 2em 8em;
+}
+
+.left,
+.right {
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  height: 100%;
+  border-radius: 5px;
 }
 
 .left {
   width: 25%;
   margin-right: 20px;
+  height: auto;
 }
 
 .right {
@@ -395,12 +413,9 @@ img {
   overflow-y: scroll;
 }
 
-.left,
-.right {
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
-  height: 550px;
-  border-radius: 5px;
+.left p,
+.right p {
+  color: black;
 }
 
 .flex-row {

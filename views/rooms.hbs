@@ -1,12 +1,10 @@
 {{!-- TODO: display something when no rooms returned --}}
-
 <div class="container flex-column" id="body-container">
-
   <div class="wrapper">
     {{! Left Search }}
     <div class="left search">
       {{! Search Again }}
-      <form action="/search" method="GET" class="text-dark h-100">
+      <form action="/search" method="GET" class="text-dark">
         <h2 class="mb-3">Discover <em>Your</em> Perfect Room</h2>
         {{! Check-in }}
         <div class="form-group">
@@ -106,6 +104,7 @@
         {{! Submit Button }}
         <div class="form-group">
           <button
+            disabled
             type="submit"
             class="btn btn-primary btn-block w-100"
           >Search</button>
@@ -116,8 +115,8 @@
     {{! Right Results }}
     <div class="right results">
       {{! All Rooms }}
+      <h2 class="mb-3">Available Rooms ({{rooms.length}}):</h2>
       <div class="list-group">
-
         {{! Getting room information from the database }}
         {{#each rooms}}
           <a
@@ -161,6 +160,8 @@
             </div>
 
           </a>
+          {{else}}
+          <h2>No Rooms Found</h2>
         {{/each}}
       </div>
     </div>

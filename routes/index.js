@@ -3,17 +3,26 @@ const router = express.Router();
 const { connection } = require("../config/db");
 const bcrypt = require("bcryptjs");
 
+// * ALL ROUTES * //
 // @desc        Landing Page
 // @route       GET /
 router.get("/", (req, res) => {
-  res.render("home", { session: req.session });
+  res.render("home", { });
 });
 
 // @desc        Login
 // @route       GET /login
 router.get("/login", (req, res) => {
+  let errMsg = req.query.errMsg;
+
+  if (errMsg)
+    errMsg = decodeURIComponent(errMsg);
+  else
+    errMsg = "";
+
   res.render("login", {
     layout: "login",
+    errMsg: errMsg // Pass errMsg as a property of the context object
   });
 });
 
@@ -22,6 +31,9 @@ router.get("/login", (req, res) => {
 router.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
+  let firstname;
+  let lastname;
+  let phonenumber;
 
   // get customer info from database using email
   let sql = `SELECT * FROM customers WHERE email='${email}';`;
@@ -30,10 +42,14 @@ router.post("/login", (req, res) => {
     if (err) console.log(err);
 
     // Returns user to the home screen if email does not exist
-    if (result.size == 0) {
+    if (result.length == 0) {
       console.log("no user found");
-      return res.render("/login");
+      return res.redirect('/login?errMsg=' + encodeURIComponent('Error Logging In'));
     }
+
+    firstname = result[0]["fname"];
+    lastname = result[0]["lname"];
+    phonenumber = result[0]["phone"];
 
     // Compare the user-entered password with the stored hashed password
     bcrypt.compare(password, result[0]["password"], function (err, result) {
@@ -45,14 +61,16 @@ router.post("/login", (req, res) => {
         console.log("logged in successfully");
 
         // TODO: create session
-        let session = req.session;
-        session.email = email;
+        req.session.email = email;
+        req.session.firstname = firstname;
+        req.session.lastname = lastname;
+        req.session.phonenumber = phonenumber;
 
         return res.redirect("/");
       } else {
         // Passwords do not match, deny access
         console.log("passwords do not match");
-        return res.redirect("/login");
+        return res.redirect('/login?errMsg=' + encodeURIComponent('Error Logging In'));
       }
     }); // end of bcrypt compare
   }); // end of sql query command
@@ -65,11 +83,66 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-// @desc        Logout
-// @route       GET /logout
+// @desc        reservations
+// @route       GET /reservations
 router.get("/reservations", (req, res) => {
-  res.render("ManageReg");
-});
+  // if logged out, return to home page
+  if (!req.session.email) {
+    return res.redirect("/login");
+  }
+  
+  // Get users reservations from database
+  const currentEmail = req.session.email;
+
+  const sql = `SELECT rooms.*, reservations.*, img_urls.img_urls
+                      FROM reservations
+                      JOIN rooms ON reservations.roomId = rooms.roomId
+                      JOIN (
+                        SELECT roomId, GROUP_CONCAT(img_url SEPARATOR ', ') AS img_urls
+                        FROM room_imgs
+                        GROUP BY roomId
+                      ) AS img_urls ON img_urls.roomId = rooms.roomId
+                      WHERE email = '${currentEmail}'
+                      ORDER BY reservations.check_in_date`;
+
+  connection.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+    }
+
+    result.forEach((room) => {
+      room.img_urls = room.img_urls.split(", ");
+      const startDate = new Date(room.check_in_date);
+      const endDate = new Date(room.check_out_date);
+
+      const timeDiff = endDate.getTime() - startDate.getTime();
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      const sDate = startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }); // returns "Wed Apr 05 2023"
+      const eDate = endDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }); // returns "Wed Apr 05 2023"
+
+      room.check_in_date = sDate;
+      room.check_out_date = eDate;
+      room.days = daysDiff;
+    });
+
+    // Check if check-out date has passed and remove reservation from database
+    result.forEach((room) => {
+      const endDate = new Date(room.check_out_date);
+      const today = new Date();
+
+      if (endDate < today) {
+        updateReservationStatus(room.roomId, 'completed');
+        updateRoomStatus(roomId, "available");
+      }
+    });
+
+    console.log(result)
+
+    res.render("reservations", {reservations: result});    
+  }); // end connection
+  
+}); // end get reservations
 
 // @desc        Register
 // @route       GET /register
@@ -88,7 +161,6 @@ router.post("/book", (req, res) => {
   res.render("book", {room: JSON.parse(req.body.roomInfo)});
 });
 
-
 // @desc        Search For Rooms
 // @route       GET /search
 router.get("/search", (req, res) => {
@@ -97,15 +169,14 @@ router.get("/search", (req, res) => {
   let check_in = req.query.check_in_date;
   let check_out = req.query.check_out_date;
 
+
+  //WHERE check_out<today
+  //JOIN reservations 
   let sql = `SELECT rooms.*, GROUP_CONCAT(room_imgs.img_url SEPARATOR ', ') AS img_urls
                   FROM rooms
                   JOIN room_imgs ON rooms.roomId = room_imgs.roomId
                   WHERE max_guests >= ${num_guests} AND availability = "available"
                   GROUP BY rooms.roomId;`;
-
-  // let sql1 = `SELECT *
-  // FROM room_imgs AND rooms
-  // WHERE rooms.roomId = room_imgs.roomId`;
 
   let roomsArr = [];
 
@@ -130,6 +201,7 @@ router.get("/search", (req, res) => {
       room.days = daysDiff;
       room.check_in = check_in;
       room.check_out = check_out;
+      room.total_guests = num_guests;
     });
 
     // console.log(roomsArr);
@@ -178,17 +250,57 @@ router.post("/register", async (req, res) => {
       return res.redirect("/register");
     }
 
-    console.log("1 record inserted");
+    // TODO: create session
+    req.session.email = email;
+    req.session.firstname = firstname;
+    req.session.lastname = lastname;
+    req.session.phonenumber = phonenumber;
+
     res.redirect("/"); // go to home page
   }); // end connection
 }); // end router post
 
 // @desc        Process Pay Form
 // @route       POST /process-pay
-router.post("/process-pay", async (req, res) => {
+router.post("/process-pay", (req, res) => {
+  const roomInfo = JSON.parse(req.body.roomInfo);
+  const roomId = roomInfo.roomId;
+  const check_in_date = roomInfo.check_in;
+  const check_out_date = roomInfo.check_out;
+  const totalPayment = roomInfo.price_per_night * roomInfo.days;
+  const total_guests = roomInfo.total_guests;
+  const cc_num = req.body.card;
+  const email = req.body.email;
+  const stat = "booked";
 
+  // Add entry into the reservations table
+  // Needs: roomID, email, totalPayment, checkInDate, checkOutDate, totalGuests,  cc_num, and stat
+  const sql =  `INSERT INTO reservations (roomId, email, totalPayment, cc_num, check_in_date, check_out_date, total_guests, stat) 
+                        VALUES('${roomId}', '${email}', '${totalPayment}', '${cc_num}', '${check_in_date}', 
+                        '${check_out_date}', '${total_guests}', '${stat}');`;
+                                      
+  connection.query(sql, function (err, result) {
+    if (err) console.log(err);
+    console.log("1 record inserted into reservations table.");
+
+    updateRoomStatus(roomId, "not available");
+    
+    res.redirect("/reservations");
+  });
 });
 
+// @desc        Process Cancel Res Form
+// @route       POST /cancel-reservations
+router.post("/cancel-reservation", (req, res) => {
+  const roomId = req.body.roomId;
+
+  // Update the room's availability to booked
+  updateReservationStatus(roomId, "cancelled");
+  updateRoomStatus(roomId, "available");
+  res.redirect('/reservations');
+});
+
+// * Helper Funcs * //
 const generateRegisterCmd = (email, password, fname, lname, phone) =>
   `INSERT INTO customers (email, password, fname, lname, phone) VALUES ('${email}', '${password}', '${fname}', '${lname}', '${phone}')`;
 
@@ -208,7 +320,7 @@ const checkUsedEmails = (email) => {
   });
 };
 
-/*should return an array of all rooms with available ameneties in an array
+/*should return an array of all rooms with available amenities in an array
 doesnt check if something is an array or not
 [i] [0,1,2,3,4,5,6,7] size = 8
 smoke,tv,wifi,minfridge,gym,pets,breakfast
@@ -241,7 +353,7 @@ const checkAvailableAmenities = (amenitiesArray) => {
     //console.log(result);
     return false;
   });
-}; // end of checkAvailbleAmenities
+}; // end of checkAvailableAmenities
 
 const amenetiesHelper = (amenetiesNum) => {
   switch (amenetiesNum) {
@@ -263,6 +375,7 @@ const amenetiesHelper = (amenetiesNum) => {
       return "amenities.breakfast=";
   }
 };
+
 //provides all reservations that are booked
 const reservationsList = (email) => {
   let sql =`SELECT customers.email,customers.fname,customers.lname,customers.phone,reservations.roomid,reservations.status from customers LEFT JOIN reservations on customers.email=reservations.email  where customers.email ='${email}'`;
@@ -271,22 +384,33 @@ const reservationsList = (email) => {
     return false;
   });
 };
-const reserveRoom = (roomid,email) => {
-  let sql = `UPDATE reservations set status='booked' WHERE NOT status='booked' AND roomid = '${roomid}' AND email = '${email}';`;
+
+//todo
+const reserveRoom = (roomId) => {
+  let sql = `UPDATE rooms SET availability='not available' WHERE roomId = '${roomId}';`;
 
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
-    return false;
-    connection.up
   });
 };
-const cancelRoom = (roomid,email) => {
-  let sql = `UPDATE reservations set status='cancelled' WHERE NOT status='cancelled' AND roomid = '${roomid}' AND email = '${email}';`;
+
+const updateReservationStatus = (roomId, stat) => {
+  let sql = `UPDATE reservations SET stat='${stat}' WHERE roomId=${roomId} AND stat='booked';`;
 
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
-    return false;
-    connection.up
+    // console.log("Reservation cancelled.", result);
   });
 };
+
+const updateRoomStatus = (roomId, stat) => {
+  let sql = `UPDATE rooms SET availability='${stat}' WHERE roomId=${roomId};`;
+
+  connection.query(sql, function (err, result) {
+    if (err) console.log(err);
+    // console.log("Room Status Updated", result);
+  });
+};
+
+// UPDATE rooms SET availability='available' WHERE roomId=${roomId};
 module.exports = router;
