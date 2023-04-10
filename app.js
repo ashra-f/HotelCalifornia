@@ -8,7 +8,6 @@ const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
-const MySQLStore = require('connect-mysql')(session);
 const { db, parsedUrl } = require("./config/db");
 
 (async () => {
@@ -22,29 +21,18 @@ const { db, parsedUrl } = require("./config/db");
 });
 
 // Connect to database
-// connection.connect((err) => {
-//   if (err) throw err;
-//   console.log(`Connected to database on port 3306`);
-// });
+connection.connect((err) => {
+  if (err) throw err;
+  console.log(`Connected to database on port 3306`);
+});
 
 const app = express();
-
-const sessionStore = new MySQLStore({
-  config: {
-    host: parsedUrl.hostname,
-    user: parsedUrl.username,
-    password: parsedUrl.password,
-    database: parsedUrl.pathname.substring(1),
-    port: parsedUrl.port || 3306,
-  },
-});
 
 // Sessions
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
     secret: "flying dolphin agent 47",
-    store: sessionStore,
     resave: false,
     cookie: { maxAge: oneDay },
     saveUninitialized: false,
