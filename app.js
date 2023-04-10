@@ -9,7 +9,7 @@ const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
 const MySQLStore = require('connect-mysql')(session);
-const { connection } = require("./config/db");
+const { connection, parsedUrl } = require("./config/db");
 
 // Connect to database
 // connection.connect((err) => {
@@ -19,7 +19,15 @@ const { connection } = require("./config/db");
 
 const app = express();
 
-const sessionStore = new MySQLStore({ con: connection });
+const sessionStore = new MySQLStore({
+  config: {
+    host: parsedUrl.hostname,
+    user: parsedUrl.username,
+    password: parsedUrl.password,
+    database: parsedUrl.pathname.substring(1),
+    port: parsedUrl.port || 3306,
+  },
+});
 
 // Sessions
 const oneDay = 1000 * 60 * 60 * 24;
