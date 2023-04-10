@@ -6,13 +6,13 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
-const { connection } = require("./config/db");
+// const { connection } = require("./config/db");
 
 // Connect to database
-connection.connect((err) => {
-  if (err) throw err;
-  console.log(`Connected to database on port 3306`);
-});
+// connection.connect((err) => {
+//   if (err) throw err;
+//   console.log(`Connected to database on port 3306`);
+// });
 
 const app = express();
 

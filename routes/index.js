@@ -3,6 +3,12 @@ const router = express.Router();
 const { connection } = require("../config/db");
 const bcrypt = require("bcryptjs");
 
+// Connect to database
+connection.connect((err) => {
+  if (err) throw err;
+  console.log(`Connected to database on port 3306`);
+});
+
 // * ALL ROUTES * //
 // @desc        Landing Page
 // @route       GET /
