@@ -104,11 +104,113 @@ async function createRoomImgsTable() {
   await query(sql);
 }
 
+async function insertRoomImgs() {
+  const roomImgs = [    [1, 'single1-1.jpeg'],
+    [1, 'single1-2.jpeg'],
+    [1, 'single1-3.jpeg'],
+    [1, 'single1-4.jpeg'],
+    [1, 'single1-5.jpeg'],
+    [2, 'single2-1.jpeg'],
+    [2, 'single2-2.jpeg'],
+    [2, 'single2-3.jpeg'],
+    [2, 'single2-4.jpeg'],
+    [2, 'single2-5.jpeg'],
+    [3, 'single3-1.jpeg'],
+    [3, 'single3-2.jpeg'],
+    [3, 'single3-3.jpeg'],
+    [3, 'single3-4.jpeg'],
+    [3, 'single3-5.jpeg'],
+    [4, 'double1-1.jpeg'],
+    [4, 'double1-2.jpeg'],
+    [4, 'double1-3.jpeg'],
+    [4, 'double1-4.jpeg'],
+    [4, 'double1-5.jpeg'],
+    [5, 'double2-1.jpeg'],
+    [5, 'double2-2.jpeg'],
+    [5, 'double2-3.jpeg'],
+    [5, 'double2-4.jpeg'],
+    [5, 'double2-5.jpeg'],
+    [6, 'double3-1.jpeg'],
+    [6, 'double3-2.jpeg'],
+    [6, 'double3-3.jpeg'],
+    [6, 'double3-4.jpeg'],
+    [6, 'double3-5.jpeg'],
+    [7, 'suite1-1.jpeg'],
+    [7, 'suite1-2.jpeg'],
+    [7, 'suite1-3.jpeg'],
+    [7, 'suite1-4.jpeg'],
+    [7, 'suite1-5.jpeg'],
+    [8, 'suite2-1.jpeg'],
+    [8, 'suite2-2.jpeg'],
+    [8, 'suite2-3.jpeg'],
+    [8, 'suite2-4.jpeg'],
+    [8, 'suite2-5.jpeg'],
+    [9, 'suite3-1.jpeg'],
+    [9, 'suite3-2.jpeg'],
+    [9, 'suite3-3.jpeg'],
+    [9, 'suite3-4.jpeg'],
+    [9, 'suite3-5.jpeg'],
+    [10, 'conference1-1.jpeg'],
+    [10, 'conference1-2.jpeg'],
+    [10, 'conference1-3.jpeg'],
+    [10, 'conference1-4.jpeg'],
+    [10, 'conference1-5.jpeg'],
+    [11, 'conference2-1.jpeg'],
+    [11, 'conference2-2.jpeg'],
+    [11, 'conference2-3.jpeg'],
+    [11, 'conference2-4.jpeg'],
+    [11, 'conference2-5.jpeg'],
+    [12, 'conference3-1.jpeg'],
+    [12, 'conference3-2.jpeg'],
+    [12, 'conference3-3.jpeg'],
+    [12, 'conference3-4.jpeg'],
+    [12, 'conference3-5.jpeg']
+  ];
+  
+  const queryString = 'INSERT INTO `room_imgs` (`roomId`, `img_url`) VALUES ?';
+
+  try {
+    const result = await pool.query(queryString, [roomImgs]);
+    console.log('Inserted room images successfully');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+const insertAmenities = async (amenities) => {
+  const placeholders = amenities.map((amenity) => "(?, ?, ?, ?, ?, ?, ?, ?)").join(", ");
+  const values = amenities.reduce((acc, curr) => acc.concat(Object.values(curr)), []);
+  const query = `INSERT INTO amenities (roomId, smoke, tv, free_wifi, minifridge, gym, pets, breakfast) VALUES ${placeholders}`;
+  try {
+    const result = await db.query(query, values);
+    console.log(`Inserted ${result.affectedRows} rows`);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+function insertRoomsData() {
+  const query = 'INSERT INTO rooms (roomId, description, size, price_per_night, max_guests, availability) VALUES ?';
+  const values = roomsData.map(room => [room.roomId, room.description, room.size, room.price_per_night, room.max_guests, room.availability]);
+
+  pool.query(query, [values], (err, results) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('Rooms data inserted successfully');
+  });
+}
+
+
 module.exports = {
   createAmenitiesTable,
   createCustomersTable,
   createReservationsTable,
   createRoomsTable,
   createRoomImgsTable,
+  insertRoomImgs,
+  insertAmenities,
+  insertRoomsData,
   connection
 };

@@ -8,7 +8,7 @@ const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
-const { connection, createAmenitiesTable, createCustomersTable, createReservationsTable, createRoomsTable, createRoomImgsTable } = require("./config/db");
+const { connection, createAmenitiesTable, createCustomersTable, createReservationsTable, createRoomsTable, createRoomImgsTable, insertAmenities, insertRoomImgs, insertRoomsData } = require("./config/db");
 
 // Connect to database
 connection.connect((err) => {
@@ -22,6 +22,41 @@ connection.connect((err) => {
   await createReservationsTable();
   await createRoomsTable();
   await createRoomImgsTable();
+  await insertRoomImgs();
+
+  const amenitiesData = [
+    { roomId: 1, smoke: 0, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 0, breakfast: 0 },
+    { roomId: 2, smoke: 0, tv: 1, free_wifi: 1, minifridge: 1, gym: 0, pets: 0, breakfast: 0 },
+    { roomId: 3, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
+    { roomId: 4, smoke: 1, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 0, breakfast: 0 },
+    { roomId: 5, smoke: 1, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 1, breakfast: 1 },
+    { roomId: 6, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
+    { roomId: 7, smoke: 0, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 0, breakfast: 0 },
+    { roomId: 8, smoke: 0, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 0, breakfast: 0 },
+    { roomId: 9, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
+    { roomId: 10, smoke: 0, tv: 0, free_wifi: 1, minifridge: 1, gym: 0, pets: 0, breakfast: 0 },
+    { roomId: 11, smoke: 1, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 1, breakfast: 1 },
+    { roomId: 12, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
+  ];
+
+  const roomsData = [
+  { roomId: 1, description: 'Indulge in the ultimate comfort and relaxation in our luxurious single bed room, featuring high-end amenities.', size: 'Standard Single', price_per_night: 50, max_guests: 1, availability: 'available' },
+  { roomId: 2, description: 'Indulge in the ultimate comfort and relaxation in our luxurious single bed room, featuring high-end amenities.', size: 'Deluxe Single', price_per_night: 75, max_guests: 1, availability: 'not available' },
+  { roomId: 3, description: 'Indulge in the ultimate comfort and relaxation in our luxurious single bed room, featuring high-end amenities.', size: 'Executive Single', price_per_night: 90, max_guests: 1, availability: 'available' },
+  { roomId: 4, description: 'Experience the height of luxury with our spacious double room, complete with stylish decor and premium amenities.', size: 'Standard Double', price_per_night: 100, max_guests: 2, availability: 'available' },
+  { roomId: 5, description: 'Experience the height of luxury with our spacious double room, complete with stylish decor and premium amenities.', size: 'Deluxe Double', price_per_night: 85, max_guests: 2, availability: 'available' },
+  { roomId: 6, description: 'Experience the height of luxury with our spacious double room, complete with stylish decor and premium amenities.', size: 'Executive Double', price_per_night: 100, max_guests: 2, availability: 'available' },
+  { roomId: 7, description: 'Escape to pure luxury with our exquisite suite, featuring a separate living area, and stunning views of the city.', size: 'Standard Suite', price_per_night: 350, max_guests: 7, availability: 'available' },
+  { roomId: 8, description: 'Escape to pure luxury with our exquisite suite, featuring a separate living area, and stunning views of the city.', size: 'Deluxe Suite', price_per_night: 400, max_guests: 7, availability: 'available' },
+  { roomId: 9, description: 'Escape to pure luxury with our exquisite suite, featuring a separate living area, and stunning views of the city.', size: 'Executive Suite', price_per_night: 450, max_guests: 7, availability: 'available' },
+  { roomId: 10, description: 'Reserve a professional conference room, complete with state-of-the-art equipment and comfortable seating to ensure success.', size: 'Standard Conference', price_per_night: 600, max_guests: 10, availability: 'available' },
+  { roomId: 11, description: 'Reserve a professional conference room, complete with state-of-the-art equipment and comfortable seating to ensure success.', size: 'Deluxe Conference', price_per_night: 650, max_guests: 10, availability: 'available' },
+  { roomId: 12, description: 'Reserve a professional conference room, complete with state-of-the-art equipment and comfortable seating to ensure success.', size: 'Executive Conference', price_per_night: 700, max_guests: 10, availability: 'available' },
+];
+
+
+  await insertRoomsData(roomsData);
+  await insertAmenities(amenitiesData);
 })().catch((err) => {
   console.error("Error creating tables:", err);
 });
