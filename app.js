@@ -8,26 +8,24 @@ const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
-
-const {
-  connection,
-  createTableCustomer,
-  dropTableCustomers,
-} = require("./config/db");
+const { connection } = require("./config/db");
 
 // Connect to database
-connection.connect((err) => {
-  if (err) throw err;
-  console.log(`Connected to database on port 3306`);
-});
+// connection.connect((err) => {
+//   if (err) throw err;
+//   console.log(`Connected to database on port 3306`);
+// });
 
 const app = express();
+
+const sessionStore = new MySQLStore({ con: connection });
 
 // Sessions
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   session({
     secret: "flying dolphin agent 47",
+    store: sessionStore,
     resave: false,
     cookie: { maxAge: oneDay },
     saveUninitialized: false,

@@ -39,7 +39,7 @@
 const mysql = require("mysql2");
 const url = require('url');
 
-const CLEARDB_DATABASE_URL = process.env.CLEARDB_DATABASE_URL || 'mysql://ash:Shampoo5%3DFeline%3DDarkness@localhost:3306/hotelcalifornia';
+const CLEARDB_DATABASE_URL = process.env.CLEARDB_DATABASE_URL;
 
 const parsedUrl = new url.URL(CLEARDB_DATABASE_URL);
 const hostname = parsedUrl.hostname;
