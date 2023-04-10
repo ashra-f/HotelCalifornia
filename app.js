@@ -10,6 +10,12 @@ const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
 const { db, parsedUrl } = require("./config/db");
 
+// Connect to database
+db.connect((err) => {
+  if (err) throw err;
+  console.log(`Connected to database on port 3306`);
+});
+
 (async () => {
   await db.createAmenitiesTable();
   await db.createCustomersTable();
@@ -18,12 +24,6 @@ const { db, parsedUrl } = require("./config/db");
   await db.createRoomImgsTable();
 })().catch((err) => {
   console.error("Error creating tables:", err);
-});
-
-// Connect to database
-connection.connect((err) => {
-  if (err) throw err;
-  console.log(`Connected to database on port 3306`);
 });
 
 const app = express();
