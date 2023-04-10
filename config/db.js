@@ -112,5 +112,3 @@ module.exports = {
   createRoomImgsTable,
   connection
 };
-
-module.exports.parsedUrl = parsedUrl;

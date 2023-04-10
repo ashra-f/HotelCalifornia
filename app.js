@@ -8,20 +8,20 @@ const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
-const { db, parsedUrl } = require("./config/db");
+const { connection, createAmenitiesTable, createCustomersTable, createReservationsTable, createRoomsTable, createRoomImgsTable } = require("./config/db");
 
 // Connect to database
-// db.connect((err) => {
-//   if (err) throw err;
-//   console.log(`Connected to database on port 3306`);
-// });
+connection.connect((err) => {
+  if (err) throw err;
+  console.log(`Connected to database on port 3306`);
+});
 
 (async () => {
-  await db.createAmenitiesTable();
-  await db.createCustomersTable();
-  await db.createReservationsTable();
-  await db.createRoomsTable();
-  await db.createRoomImgsTable();
+  await createAmenitiesTable();
+  await createCustomersTable();
+  await createReservationsTable();
+  await createRoomsTable();
+  await createRoomImgsTable();
 })().catch((err) => {
   console.error("Error creating tables:", err);
 });
