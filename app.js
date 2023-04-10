@@ -9,7 +9,17 @@ const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
 const MySQLStore = require('connect-mysql')(session);
-const { connection, parsedUrl } = require("./config/db");
+const { db, parsedUrl } = require("./config/db");
+
+(async () => {
+  await db.createAmenitiesTable();
+  await db.createCustomersTable();
+  await db.createReservationsTable();
+  await db.createRoomsTable();
+  await db.createRoomImgsTable();
+})().catch((err) => {
+  console.error("Error creating tables:", err);
+});
 
 // Connect to database
 // connection.connect((err) => {
