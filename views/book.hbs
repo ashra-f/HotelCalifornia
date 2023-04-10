@@ -150,46 +150,10 @@
         {{! Credit Card Number }}
         <div class="form-group">
           <label for="CardNumber">Credit Card Number</label>
-          <input required class="form-control" id="CardNumber" type="tel" 
+          <input class="form-control" id="CardNumber" type="tel" 
                       inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" 
-                      maxlength="16" placeholder="xxxx xxxx xxxx xxxx">
+                      maxlength="16" placeholder="xxxx xxxx xxxx xxxx" name="card" required>
         </div>
-
-        {{! Expiration Date }}
-        {{!-- <div class="form-group">
-          <label for="ExpDate">Expiration Date</label>
-          <input
-            type="text"
-            class="form-control"
-            id="ExpDate"
-            placeholder="MM/YYYY"
-            name="expdate"
-          />
-        </div>
-
-        {{! CVV }}
-        <div class="form-group">
-          <label for="CVV">Security code</label>
-          <input
-            type="number"
-            class="form-control"
-            id="CVV"
-            placeholder="CVV"
-            name="cvv"
-          />
-        </div>
-
-        {{! Billing Address Zip Code }}
-        <div class="form-group">
-          <label for="ZipCode">Zip Code</label>
-          <input
-            type="number"
-            class="form-control"
-            id="ZipCode"
-            placeholder="Zip Code"
-            name="zip"
-          />
-        </div> --}}
 
         {{! Submit Button }}
         <div class="form-group">

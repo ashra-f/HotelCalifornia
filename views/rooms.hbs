@@ -8,12 +8,13 @@
         <h2 class="mb-3">Discover <em>Your</em> Perfect Room</h2>
         {{! Check-in }}
         <div class="form-group">
-          <label for="check-in-date">Check-in date:</label>
+          <label for="check_in_date">Check-in date:</label>
           <input
             type="date"
-            id="check-in-date"
+            id="check_in_date"
             class="form-control"
-            name="check-in-date"
+            name="check_in_date"
+            value="{{rooms.[0].check_in}}"
             required
           />
         </div>
@@ -23,24 +24,25 @@
           <label for="check-out-date">Check-out date:</label>
           <input
             type="date"
-            id="check-out-date"
+            id="check_out_date"
             class="form-control"
-            name="check-out-date"
+            name="check_out_date"
+            value="{{rooms.[0].check_out}}"
             required
           />
         </div>
 
         {{! Guests Amount }}
         <div class="form-group">
-          <label for="num-guests">Guests:</label>
+          <label for="num_guests">Guests:</label>
           <input
             type="number"
-            id="num-guests"
+            id="num_guests"
             class="form-control"
-            name="num-guests"
+            name="num_guests"
             min="1"
             max="10"
-            value="1"
+            value="{{rooms.[0].total_guests}}"
             required
           />
         </div>
@@ -51,18 +53,18 @@
 
           {{! Smoke }}
           <label for="smoke">
-            <input type="checkbox" id="smoke" name="amenities" value="smoke" />
+            <input type="checkbox" id="smoke" name="amenities" value="smoke" disabled />
             Smoke
           </label>
 
           {{! TV }}
           <label for="tv">
-            <input type="checkbox" id="tv" name="amenities" value="tv" />
+            <input type="checkbox" id="tv" name="amenities" value="tv" disabled />
             TV
           </label>
 
           <label for="wifi">
-            <input type="checkbox" id="wifi" name="amenities" value="wifi" />
+            <input type="checkbox" id="wifi" name="amenities" value="wifi" disabled />
             Wifi
           </label>
 
@@ -73,19 +75,20 @@
               id="minifridge"
               name="amenities"
               value="minifridge"
+              disabled
             />
             Mini Fridge
           </label>
 
           {{! Gym }}
           <label for="gym">
-            <input type="checkbox" id="gym" name="amenities" value="gym" />
+            <input type="checkbox" id="gym" name="amenities" value="gym" disabled />
             Gym
           </label>
 
           {{! Pets }}
           <label for="pets">
-            <input type="checkbox" id="pets" name="amenities" value="pets" />
+            <input type="checkbox" id="pets" name="amenities" value="pets" disabled />
             Pets
           </label>
 
@@ -96,6 +99,7 @@
               id="breakfast"
               name="amenities"
               value="breakfast"
+              disabled
             />
             Breakfast
           </label>
@@ -104,11 +108,9 @@
         {{! Submit Button }}
         <div class="form-group">
           <button
-            disabled
             type="submit"
             class="btn btn-primary btn-block w-100"
-            style="background-color: red;"
-          >COMING SOON</button>
+          >Search</button>
         </div>
       </form>
     </div>

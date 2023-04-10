@@ -4,6 +4,12 @@
   </script>
 {{/if}}
 
+{{#if notLoggedIn}}
+  <script>
+    toastr.error("Log in to access reservations. 😁");
+  </script>
+{{/if}}
+
 {{! Hotel Cali Description }}
 <div class="section mb-4">
   <h3>
@@ -23,13 +29,6 @@
 
 {{! Login Form }}
 <div class="section mb-4">
-  {{!-- Error Message (when needed) --}}
-  {{#if errMsg}}
-    <div class="alert alert-danger" role="alert">
-      {{errMsg}}, try again!
-    </div>
-  {{/if}}
-
   <form action="/login" method="POST">
     {{! Email }}
     <div class="form-group">

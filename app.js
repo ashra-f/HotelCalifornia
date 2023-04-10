@@ -64,7 +64,14 @@ const hbs = exphbs.create({
     split: function (str, delimiter, index) {
       let arr = str.split(delimiter);
       return arr[index];
-    }
+    },
+    unless_eq: function(a, b, opts) {
+      if (a !== b) {
+          return opts.fn(this);
+      } else {
+          return opts.inverse(this);
+      }
+    },
   }
 });
 app.engine(".hbs", hbs.engine);

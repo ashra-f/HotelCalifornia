@@ -10,18 +10,21 @@ router.get("/", (req, res) => {
   const loginSuccess = req.query.loginSuccess === 'true';
   const logoutSuccess = req.query.logoutSuccess === 'true';
   const registerSuccess = req.query.registerSuccess === 'true';
+  const errMsg = req.query.errMsg;
 
-  res.render("home", { loginSuccess, logoutSuccess, registerSuccess });
+  res.render("home", { loginSuccess, logoutSuccess, registerSuccess, errMsg });
 });
 
 // @desc        Login
 // @route       GET /login
 router.get("/login", (req, res) => {
   const loginFailure = req.query.loginFailure === 'true';
+  const notLoggedIn = req.query.errMsg === 'notLoggedIn';
 
   res.render("login", {
     layout: "login",
-    loginFailure
+    loginFailure,
+    notLoggedIn
   });
 });
 
@@ -91,7 +94,7 @@ router.get("/logout", (req, res) => {
 router.get("/reservations", (req, res) => {
   // if logged out, return to home page
   if (!req.session.email) {
-    return res.redirect("/login");
+    return res.redirect('/login?errMsg=notLoggedIn');
   }
 
   // Get users reservations from database
@@ -150,9 +153,17 @@ router.get("/reservations", (req, res) => {
       }
     });
 
-    console.log(result);
+    const bookSuccess = req.query.bookSuccess === 'true';
+    const cancelSuccess = req.query.cancelSuccess === 'true';
+    const cancelFailure = req.query.cancelFailure === 'true';
 
-    res.render("reservations", { reservations: result });
+    res.render("reservations", { 
+      reservations: result, 
+      bookSuccess, 
+      cancelSuccess, 
+      cancelFailure, 
+      currentPage: "manage-reservations" 
+    });
   }); // end connection
 }); // end get reservations
 
@@ -173,6 +184,9 @@ router.get("/book", (req, res) => {
 
 // veri stuupiyd codey dont do anymore bad, but enjoyable, I owe ash 1 million --shawske ryan
 router.post("/book", (req, res) => {
+  if (!req.session.email) {
+    return res.redirect("/register");
+  }
   res.render("book", { room: JSON.parse(req.body.roomInfo) });
 });
 
@@ -289,12 +303,9 @@ router.post("/process-pay", (req, res) => {
   const check_out_date = roomInfo.check_out;
   const totalPayment = roomInfo.price_per_night * roomInfo.days;
   const total_guests = roomInfo.total_guests;
-  //const cc_num1 =  req.body.card;
   const cc_num = req.body.card;
   const email = req.body.email;
   const stat = "booked";
-
-  // combine the 4 parts
 
   // Add entry into the reservations table
   // Needs: roomID, email, totalPayment, checkInDate, checkOutDate, totalGuests,  cc_num, and stat
@@ -308,7 +319,7 @@ router.post("/process-pay", (req, res) => {
 
     updateRoomStatus(roomId, "not available");
 
-    res.redirect("/reservations");
+    res.redirect("/reservations?bookSuccess=true");
   });
 });
 
@@ -316,11 +327,21 @@ router.post("/process-pay", (req, res) => {
 // @route       POST /cancel-reservations
 router.post("/cancel-reservation", (req, res) => {
   const roomId = req.body.roomId;
+  const check_in = req.body.check_in;
+
+  // Check if check_in date is within 1 day of today
+  const today = new Date();
+  const checkInDate = new Date(check_in);
+  const timeDiff = checkInDate.getTime() - today.getTime();
+
+  if (timeDiff / (1000 * 3600 * 24) <= 1) {
+    return res.redirect("/reservations?cancelFailure=true");
+  }
 
   // Update the room's availability to booked
   updateReservationStatus(roomId, "cancelled");
   updateRoomStatus(roomId, "available");
-  res.redirect("/reservations");
+  res.redirect("/reservations?cancelSuccess=true");
 });
 
 // * Helper Funcs * //
@@ -379,7 +400,7 @@ else
 
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
-    //console.log(result);
+    
     return false;
   });
 }; // end of checkAvailableAmenities
@@ -419,7 +440,7 @@ const updateReservationStatus = (roomId, stat) => {
 
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
-    // console.log("Reservation cancelled.", result);
+    
   });
 };
 
@@ -428,7 +449,7 @@ const updateRoomStatus = (roomId, stat) => {
 
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
-    // console.log("Room Status Updated", result);
+   
   });
 };
 

@@ -1,3 +1,21 @@
+{{#if bookSuccess}}
+  <script>
+    toastr.success("Your reservation was successful! 🎉");
+  </script>
+{{/if}}
+
+{{#if cancelSuccess}}
+  <script>
+    toastr.success("Your reservation was cancelled 😢");
+  </script>
+{{/if}}
+
+{{#if cancelFailure}}
+  <script>
+    toastr.error("Cancellation not allowed less than 24 hours before check-in time. Please call us for more information. 📞");
+  </script>
+{{/if}}
+
 <section class="pay-section" id="body-container">
   <div class="wrapper">
     {{! Room Info: Left Side (even though it says right) }}
@@ -22,13 +40,25 @@
             <div class="container">
               <div class="row">
                 <div class="col-md-10">
-                <h2>{{this.size}} Room ({{this.stat}})</h2>
+                <h2>
+                  {{#if (eq this.stat "cancelled")}}
+                    <i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>                                   
+                  {{/if}}
+                  {{#if (eq this.stat "booked")}}
+                    <i class="fa-solid fa-clock" style="color: orange;"></i>
+                  {{/if}}
+                  {{#if (eq this.stat "completed")}}
+                    <i class="fa-solid fa-circle-check" style="color: #399905;"></i> 
+                  {{/if}}
+                  {{this.size}} Room 
+                </h2>
                 </div>
                 <div class="col-md-2">
                   {{#if (eq this.stat "booked")}}
                   <form action="/cancel-reservation" method="POST">
                     <div class="form-group">
                       <input type="hidden" name="roomId" value="{{this.roomId}}">
+                      <input type="hidden" name="check_in" value="{{this.check_in_date}}">
                       <button type="submit" 
                         class="btn btn-danger">Cancel</button>
                     </div>
