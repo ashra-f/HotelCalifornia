@@ -31,7 +31,6 @@ const connection = mysql.createConnection({
   database: database,
 });
 
-
 // Add your connection code here
 const query = util.promisify(connection.query).bind(connection);
 
