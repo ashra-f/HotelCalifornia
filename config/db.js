@@ -13,6 +13,7 @@
 
 const mysql = require("mysql2");
 const url = require('url');
+const util = require('util');
 
 const CLEARDB_DATABASE_URL = process.env.CLEARDB_DATABASE_URL;
 
