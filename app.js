@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const Toastify = require("toastify-js");
+const MySQLStore = require('connect-mysql')(session);
 const { connection } = require("./config/db");
 
 // Connect to database
