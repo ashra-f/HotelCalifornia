@@ -6,23 +6,12 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
-const { connection, createAmenitiesTable, createCustomersTable, 
-  createReservationsTable, createRoomsTable, createRoomImgsTable } = require("./config/db");
+const { connection } = require("./config/db");
 
 // Connect to database
 connection.connect((err) => {
   if (err) throw err;
   console.log(`Connected to database on port 3306`);
-});
-
-(async () => {
-  await createAmenitiesTable();
-  await createCustomersTable();
-  await createReservationsTable();
-  await createRoomsTable();
-  await createRoomImgsTable();
-})().catch((err) => {
-  console.error("Error creating tables:", err);
 });
 
 const app = express();
@@ -45,11 +34,6 @@ app.use(function(req, res, next) {
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Logging
-// if (process.env.NODE_ENV == "development") {
-//   app.use(morgan("dev"));
-// }
 
 // Handlebars
 const hbs = exphbs.create({ 
@@ -78,6 +62,7 @@ const hbs = exphbs.create({
     },
   }
 });
+
 app.engine(".hbs", hbs.engine);
 app.set("view engine", ".hbs");
 
@@ -85,12 +70,10 @@ app.set("view engine", ".hbs");
 app.use(cookieParser());
 
 // Static folder
-// app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.use("/", require("./routes/index"));
-// app.use("/auth", require("./routes/auth"));
 
 const PORT = process.env.PORT || 5000;
 
