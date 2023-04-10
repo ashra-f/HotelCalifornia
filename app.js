@@ -22,22 +22,7 @@ connection.connect((err) => {
   await createReservationsTable();
   await createRoomsTable();
   await createRoomImgsTable();
-  await insertRoomImgs();
-
-  const amenitiesData = [
-    { roomId: 1, smoke: 0, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 0, breakfast: 0 },
-    { roomId: 2, smoke: 0, tv: 1, free_wifi: 1, minifridge: 1, gym: 0, pets: 0, breakfast: 0 },
-    { roomId: 3, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
-    { roomId: 4, smoke: 1, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 0, breakfast: 0 },
-    { roomId: 5, smoke: 1, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 1, breakfast: 1 },
-    { roomId: 6, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
-    { roomId: 7, smoke: 0, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 0, breakfast: 0 },
-    { roomId: 8, smoke: 0, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 0, breakfast: 0 },
-    { roomId: 9, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
-    { roomId: 10, smoke: 0, tv: 0, free_wifi: 1, minifridge: 1, gym: 0, pets: 0, breakfast: 0 },
-    { roomId: 11, smoke: 1, tv: 1, free_wifi: 1, minifridge: 0, gym: 0, pets: 1, breakfast: 1 },
-    { roomId: 12, smoke: 1, tv: 1, free_wifi: 1, minifridge: 1, gym: 1, pets: 1, breakfast: 1 },
-  ];
+  // await insertRoomImgs();
 
   const roomsData = [
   { roomId: 1, description: 'Indulge in the ultimate comfort and relaxation in our luxurious single bed room, featuring high-end amenities.', size: 'Standard Single', price_per_night: 50, max_guests: 1, availability: 'available' },
@@ -56,7 +41,7 @@ connection.connect((err) => {
 
 
   await insertRoomsData(roomsData);
-  await insertAmenities(amenitiesData);
+  // await insertAmenities(amenitiesData);
 })().catch((err) => {
   console.error("Error creating tables:", err);
 });

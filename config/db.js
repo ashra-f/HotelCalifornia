@@ -189,7 +189,7 @@ const insertAmenities = async (amenities) => {
   }
 };
 
-function insertRoomsData() {
+function insertRoomsData(roomsData) {
   const query = 'INSERT INTO rooms (roomId, description, size, price_per_night, max_guests, availability) VALUES ?';
   const values = roomsData.map(room => [room.roomId, room.description, room.size, room.price_per_night, room.max_guests, room.availability]);
 
