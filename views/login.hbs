@@ -1,3 +1,9 @@
+{{#if loginFailure}}
+  <script>
+    toastr.error("Error logging in. Please try again. 😔");
+  </script>
+{{/if}}
+
 {{! Hotel Cali Description }}
 <div class="section mb-4">
   <h3>
@@ -35,6 +41,7 @@
         aria-describedby="emailHelp"
         placeholder="Enter email"
         name="email"
+        required
       />
 
     </div>
@@ -48,6 +55,7 @@
         id="InputPassword1"
         placeholder="Password"
         name="password"
+        required
       />
     </div>
 

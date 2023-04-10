@@ -4,7 +4,7 @@
     <div class="right m-3" style="width: 75%;">
       {{! Image }}
       <img
-      {{!-- very stupid syntax needed .[] crazy stuff, but fun - ryanShawn --}}
+        {{! very stupid syntax needed .[] crazy stuff, but fun - ryanShawn }}
         src="imgs/{{room.img_urls.[0]}}"
         alt="Single Bed"
         height="300"
@@ -21,21 +21,21 @@
           <p>Price per night ${{room.price_per_night}}</p>
         </div>
       </div>
-            {{!-- Room Summary --}}
+      {{! Room Summary }}
       <div class="row">
         <div class="col-md-12">
           <h2>Room Summary</h2>
         </div>
       </div>
 
-      {{!-- Room Type --}}
+      {{! Room Type }}
       <div class="row">
         <div class="col-md-12">
           <p class="m-0 p-0">Room Type: {{room.size}}</p>
         </div>
       </div>
 
-      {{!-- Dates --}}
+      {{! Dates }}
       <div class="row">
         <div class="col-md-12">
           <p class="m-0 p-0">Check In: {{room.check_in}}</p>
@@ -48,27 +48,50 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-12">
           <p class="m-0 p-0">Price per night: ${{room.price_per_night}}</p>
-        </div>
-        <div class="col-md-5">
-          <p class="m-0 p-0">Days: {{room.days}}</p>        
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
-          <p>Price: ${{multiply room.price_per_night  room.days}}</p>        
+          <p class="m-0 p-0">Days: {{room.days}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <p>Price: ${{multiply room.price_per_night room.days}}</p>
         </div>
       </div>
 
-      {{!-- Amenities --}}
+      {{! Amenities }}
       <div class="row">
         <div class="col-md-12">
-          <h2>Amenities</h2>
+          <h2 class="mb-2">Amenities</h2>
+          {{#if room.gym}}
+            <i class="fa-solid fa-dumbbell fa-2xl" style="color: #00000f;"></i>
+          {{/if}}
+          {{#if room.pets}}
+            <i class="fa-solid fa-paw fa-2xl" style="color: #000000;"></i>
+          {{/if}}
+          {{#if room.smoke}}
+            <i class="fa-solid fa-smoking fa-2xl" style="color: #000000;"></i>
+          {{/if}}
+          {{#if room.tv}}
+            <i class="fa-solid fa-tv fa-2xl" style="color: #000000;"></i>
+          {{/if}}
+          {{#if room.free_wifi}}
+            <i class="fa-solid fa-wifi fa-2xl" style="color: #000000;"></i>
+          {{/if}}
+          {{#if room.minifridge}}
+            <i class="fa-solid fa-snowflake fa-2xl" style="color: #000000;"></i>
+          {{/if}}
+          {{#if room.breakfast}}
+            <i class="fa-solid fa-mug-saucer fa-2xl" style="color: #000000;"></i>
+          {{/if}}
         </div>
       </div>
     </div>
-    
+
     {{! Pay Form: Right Side (even though it says left) }}
     <div class="left m-3 h-100" style="width: 25%; overflow: scroll;">
       <div class="row">
@@ -76,10 +99,10 @@
           <h2>Payment Info</h2>
         </div>
       </div>
-      {{!-- Pay Form --}}
+      {{! Pay Form }}
       <form class="pay-form" action="/process-pay" method="POST">
-        {{!-- Hidden RoomInfo --}}
-        <input type="hidden" name="roomInfo" value="{{json room}}">
+        {{! Hidden RoomInfo }}
+        <input type="hidden" name="roomInfo" value="{{json room}}" />
 
         {{! First Name }}
         <div class="form-group">
@@ -91,6 +114,7 @@
             placeholder="First Name"
             name="firstname"
             value="{{session.firstname}}"
+            required
           />
         </div>
 
@@ -104,6 +128,7 @@
             placeholder="Last Name"
             name="lastname"
             value="{{session.lastname}}"
+            required
           />
         </div>
 
@@ -118,20 +143,16 @@
             placeholder="Enter email"
             name="email"
             value="{{session.email}}"
+            required
           />
         </div>
 
         {{! Credit Card Number }}
         <div class="form-group">
           <label for="CardNumber">Credit Card Number</label>
-          <input
-            type="number"
-            class="form-control"
-            id="CardNumber"
-            aria-describedby="cardHelp"
-            placeholder="xxxx-xxxx-xxxx-xxxx"
-            name="card"
-          />
+          <input required class="form-control" id="CardNumber" type="tel" 
+                      inputmode="numeric" pattern="[0-9\s]{13,19}" autocomplete="cc-number" 
+                      maxlength="16" placeholder="xxxx xxxx xxxx xxxx">
         </div>
 
         {{! Expiration Date }}
@@ -170,10 +191,12 @@
           />
         </div> --}}
 
-        {{!-- Submit Button --}}
+        {{! Submit Button }}
         <div class="form-group">
-          <button type="submit" 
-            class="btn-block btn btn-primary btn-lg btn-block">Pay</button>
+          <button
+            type="submit"
+            class="btn-block btn btn-primary btn-lg btn-block"
+          >Pay Now</button>
         </div>
       </form>
 

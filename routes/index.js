@@ -7,22 +7,21 @@ const bcrypt = require("bcryptjs");
 // @desc        Landing Page
 // @route       GET /
 router.get("/", (req, res) => {
-  res.render("home", { });
+  const loginSuccess = req.query.loginSuccess === 'true';
+  const logoutSuccess = req.query.logoutSuccess === 'true';
+  const registerSuccess = req.query.registerSuccess === 'true';
+
+  res.render("home", { loginSuccess, logoutSuccess, registerSuccess });
 });
 
 // @desc        Login
 // @route       GET /login
 router.get("/login", (req, res) => {
-  let errMsg = req.query.errMsg;
-
-  if (errMsg)
-    errMsg = decodeURIComponent(errMsg);
-  else
-    errMsg = "";
+  const loginFailure = req.query.loginFailure === 'true';
 
   res.render("login", {
     layout: "login",
-    errMsg: errMsg // Pass errMsg as a property of the context object
+    loginFailure
   });
 });
 
@@ -44,7 +43,9 @@ router.post("/login", (req, res) => {
     // Returns user to the home screen if email does not exist
     if (result.length == 0) {
       console.log("no user found");
-      return res.redirect('/login?errMsg=' + encodeURIComponent('Error Logging In'));
+      return res.redirect(
+        "/login?errMsg=" + encodeURIComponent("Error Logging In")
+      );
     }
 
     firstname = result[0]["fname"];
@@ -66,11 +67,13 @@ router.post("/login", (req, res) => {
         req.session.lastname = lastname;
         req.session.phonenumber = phonenumber;
 
-        return res.redirect("/");
+        return res.redirect("/?loginSuccess=true");
       } else {
         // Passwords do not match, deny access
         console.log("passwords do not match");
-        return res.redirect('/login?errMsg=' + encodeURIComponent('Error Logging In'));
+        return res.redirect(
+          "/login?loginFailure=true"
+        );
       }
     }); // end of bcrypt compare
   }); // end of sql query command
@@ -80,7 +83,7 @@ router.post("/login", (req, res) => {
 // @route       GET /logout
 router.get("/logout", (req, res) => {
   req.session.destroy();
-  res.redirect("/");
+  res.redirect("/?logoutSuccess=true");
 });
 
 // @desc        reservations
@@ -90,7 +93,7 @@ router.get("/reservations", (req, res) => {
   if (!req.session.email) {
     return res.redirect("/login");
   }
-  
+
   // Get users reservations from database
   const currentEmail = req.session.email;
 
@@ -118,8 +121,18 @@ router.get("/reservations", (req, res) => {
       const timeDiff = endDate.getTime() - startDate.getTime();
       const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-      const sDate = startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }); // returns "Wed Apr 05 2023"
-      const eDate = endDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' }); // returns "Wed Apr 05 2023"
+      const sDate = startDate.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }); // returns "Wed Apr 05 2023"
+      const eDate = endDate.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }); // returns "Wed Apr 05 2023"
 
       room.check_in_date = sDate;
       room.check_out_date = eDate;
@@ -132,23 +145,25 @@ router.get("/reservations", (req, res) => {
       const today = new Date();
 
       if (endDate < today) {
-        updateReservationStatus(room.roomId, 'completed');
-        updateRoomStatus(roomId, "available");
+        updateReservationStatus(room.roomId, "completed");
+        updateRoomStatus(room.roomId, "available");
       }
     });
 
-    console.log(result)
+    console.log(result);
 
-    res.render("reservations", {reservations: result});    
+    res.render("reservations", { reservations: result });
   }); // end connection
-  
 }); // end get reservations
 
 // @desc        Register
 // @route       GET /register
 router.get("/register", (req, res) => {
+  const registerSuccess = req.query.registerSuccess === 'false';
+
   res.render("register", {
     layout: "login",
+    registerSuccess,
   });
 });
 
@@ -156,9 +171,9 @@ router.get("/book", (req, res) => {
   res.render("home", {});
 });
 
-// veri stuupiyd codey dont do anymore bad, but enjoyable --shawske ryan
+// veri stuupiyd codey dont do anymore bad, but enjoyable, I owe ash 1 million --shawske ryan
 router.post("/book", (req, res) => {
-  res.render("book", {room: JSON.parse(req.body.roomInfo)});
+  res.render("book", { room: JSON.parse(req.body.roomInfo) });
 });
 
 // @desc        Search For Rooms
@@ -169,12 +184,16 @@ router.get("/search", (req, res) => {
   let check_in = req.query.check_in_date;
   let check_out = req.query.check_out_date;
 
+  if (check_out <= check_in) {
+    return res.redirect("/?errMsg=" + encodeURIComponent("Invalid Dates"));
+  }
 
   //WHERE check_out<today
-  //JOIN reservations 
-  let sql = `SELECT rooms.*, GROUP_CONCAT(room_imgs.img_url SEPARATOR ', ') AS img_urls
+  //JOIN reservations
+  let sql = `SELECT rooms.*, GROUP_CONCAT(room_imgs.img_url SEPARATOR ', ') AS img_urls, amenities.*
                   FROM rooms
                   JOIN room_imgs ON rooms.roomId = room_imgs.roomId
+                  JOIN amenities ON amenities.roomId = rooms.roomId
                   WHERE max_guests >= ${num_guests} AND availability = "available"
                   GROUP BY rooms.roomId;`;
 
@@ -196,7 +215,7 @@ router.get("/search", (req, res) => {
       const endDate = new Date(check_out);
 
       const timeDiff = endDate.getTime() - startDate.getTime();
-      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
       room.days = daysDiff;
       room.check_in = check_in;
@@ -204,7 +223,8 @@ router.get("/search", (req, res) => {
       room.total_guests = num_guests;
     });
 
-    // console.log(roomsArr);
+    console.log(roomsArr);
+
     // Render Page
     res.render("rooms", { rooms: roomsArr });
   }); // end connection
@@ -247,7 +267,7 @@ router.post("/register", async (req, res) => {
   connection.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      return res.redirect("/register");
+      return res.redirect("/register?registerFailure=true");
     }
 
     // TODO: create session
@@ -256,7 +276,7 @@ router.post("/register", async (req, res) => {
     req.session.lastname = lastname;
     req.session.phonenumber = phonenumber;
 
-    res.redirect("/"); // go to home page
+    res.redirect("/?registerSuccess=true"); // go to home page
   }); // end connection
 }); // end router post
 
@@ -269,22 +289,25 @@ router.post("/process-pay", (req, res) => {
   const check_out_date = roomInfo.check_out;
   const totalPayment = roomInfo.price_per_night * roomInfo.days;
   const total_guests = roomInfo.total_guests;
+  //const cc_num1 =  req.body.card;
   const cc_num = req.body.card;
   const email = req.body.email;
   const stat = "booked";
 
+  // combine the 4 parts
+
   // Add entry into the reservations table
   // Needs: roomID, email, totalPayment, checkInDate, checkOutDate, totalGuests,  cc_num, and stat
-  const sql =  `INSERT INTO reservations (roomId, email, totalPayment, cc_num, check_in_date, check_out_date, total_guests, stat) 
+  const sql = `INSERT INTO reservations (roomId, email, totalPayment, cc_num, check_in_date, check_out_date, total_guests, stat) 
                         VALUES('${roomId}', '${email}', '${totalPayment}', '${cc_num}', '${check_in_date}', 
                         '${check_out_date}', '${total_guests}', '${stat}');`;
-                                      
+
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
     console.log("1 record inserted into reservations table.");
 
     updateRoomStatus(roomId, "not available");
-    
+
     res.redirect("/reservations");
   });
 });
@@ -297,7 +320,7 @@ router.post("/cancel-reservation", (req, res) => {
   // Update the room's availability to booked
   updateReservationStatus(roomId, "cancelled");
   updateRoomStatus(roomId, "available");
-  res.redirect('/reservations');
+  res.redirect("/reservations");
 });
 
 // * Helper Funcs * //
@@ -329,12 +352,18 @@ test[1,1,0,0,0,0,0,0]
 amenetiesArray should contain only 0's or 1's to check for ameneties info, check helper for order*/
 const checkAvailableAmenities = (amenitiesArray) => {
   let roomQuery = "";
-
+  defaultArray = [0,0,0,0,0,0,0,0];
+  if(amenitiesArray!=defaultArray){
   for (let i = 0; i < amenitiesArray.length; i++) {
     if (amenitiesArray[i] === 1) {
       roomQuery += amenetiesHelper(i) + "1 AND ";
     }
-  }
+  }//end for
+}//end if
+else
+{
+  let roomQuery ="amenities.free_wifi=1";
+}
 
   // Remove the trailing " AND " from the last amenity in the query
   roomQuery = roomQuery.slice(0, -5);
@@ -378,19 +407,10 @@ const amenetiesHelper = (amenetiesNum) => {
 
 //provides all reservations that are booked
 const reservationsList = (email) => {
-  let sql =`SELECT customers.email,customers.fname,customers.lname,customers.phone,reservations.roomid,reservations.status from customers LEFT JOIN reservations on customers.email=reservations.email  where customers.email ='${email}'`;
+  let sql = `SELECT customers.email,customers.fname,customers.lname,customers.phone,reservations.roomid,reservations.status from customers LEFT JOIN reservations on customers.email=reservations.email  where customers.email ='${email}'`;
   connection.query(sql, function (err, result) {
     if (err) console.log(err);
     return false;
-  });
-};
-
-//todo
-const reserveRoom = (roomId) => {
-  let sql = `UPDATE rooms SET availability='not available' WHERE roomId = '${roomId}';`;
-
-  connection.query(sql, function (err, result) {
-    if (err) console.log(err);
   });
 };
 

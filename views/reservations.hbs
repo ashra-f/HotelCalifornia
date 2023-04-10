@@ -2,7 +2,7 @@
   <div class="wrapper">
     {{! Room Info: Left Side (even though it says right) }}
     <div class="right m-3 w-100">
-      <h3 class="mb-3">Manage Active Reservations</h3>
+      <h3 class="mb-3">Manage Your Reservations</h3>
       <div class="list-group">
         {{#each reservations}}
           <a
@@ -37,7 +37,7 @@
                 </div>
               </div>
             
-              <p><span style="font-weight:bold;">{{this.email}}</span>  your reservation has been booked. See you soon!<p>
+              <p><span style="font-weight:bold;">{{this.email}}</span>  your reservation has been {{this.stat}}.<p>
                 <p>Check In: {{this.check_in_date}}<p>
                 <p>Check Out: {{this.check_out_date}}<p>
               

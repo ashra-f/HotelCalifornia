@@ -1,3 +1,22 @@
+
+{{#if loginSuccess}}
+  <script>
+    toastr.success("Welcome back, {{session.firstname}}! 😌");
+  </script>
+{{/if}}
+
+{{#if logoutSuccess}}
+  <script>
+    toastr.success("Have a pleasant day! 👋");
+  </script>
+{{/if}}
+
+{{#if registerSuccess}}
+  <script>
+    toastr.success("Welcome to Hotel California, {{session.firstname}}! 🏨");
+  </script>
+{{/if}}
+
 <!-- Hero Section Begin -->
 <section class="hero-section" id="body-container">
   <div class="my-container">

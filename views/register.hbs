@@ -1,3 +1,9 @@
+{{#if registerFailure}}
+  <script>
+    toastr.error("Error signing up. Please try again. 😔");
+  </script>
+{{/if}}
+
 {{! Hotel Cali Description }}
 <div class="section mb-4">
   <h3>
@@ -44,6 +50,7 @@
             id="InputFirstName"
             name="firstname"
             placeholder="First Name"
+            required
           />
         </div>
       </div>
@@ -58,6 +65,7 @@
             id="InputLastName"
             name="lastname"
             placeholder="Last Name"
+            required
           />
         </div>
       </div>
@@ -74,6 +82,7 @@
         aria-describedby="emailHelp"
         placeholder="Enter email"
         name="email"
+        required
       />
 
     </div>
@@ -87,6 +96,7 @@
         id="InputPhoneNumber"
         name="phonenumber"
         placeholder="Phone Number"
+        required
       />
     </div>
 
@@ -102,6 +112,7 @@
             id="InputPassword1"
             name="password1"
             placeholder="Password"
+            required
           />
         </div>
       </div>
@@ -116,6 +127,7 @@
             id="InputPassword2"
             name="password2"
             placeholder="Password"
+            required
           />
         </div>
       </div>

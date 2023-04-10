@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const exphbs = require("express-handlebars");
 const bodyParser = require("body-parser");
+const Toastify = require("toastify-js");
 
 const {
   connection,
@@ -59,6 +60,10 @@ const hbs = exphbs.create({
     },
     eq: function(a, b) {
       return a === b;
+    },
+    split: function (str, delimiter, index) {
+      let arr = str.split(delimiter);
+      return arr[index];
     }
   }
 });
@@ -69,6 +74,7 @@ app.set("view engine", ".hbs");
 app.use(cookieParser());
 
 // Static folder
+// app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes

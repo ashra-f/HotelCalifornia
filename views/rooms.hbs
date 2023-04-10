@@ -107,7 +107,8 @@
             disabled
             type="submit"
             class="btn btn-primary btn-block w-100"
-          >Search</button>
+            style="background-color: red;"
+          >COMING SOON</button>
         </div>
       </form>
     </div>
@@ -135,13 +136,39 @@
             {{! Room Info }}
             <div class="container">
               <h2>{{this.size}}</h2>
-              <p class="title">{{this.size}} Room</p>
+              <p class="title m-0">{{split this.size " " 1}} Room</p>
+              {{! Amenities }}
+              <div class="row mb-2">
+                <div class="col-md-12">
+                  {{#if this.gym}}
+                    <i class="fa-solid fa-dumbbell" style="color: #00000f;"></i>
+                  {{/if}}
+                  {{#if this.pets}}
+                    <i class="fa-solid fa-paw" style="color: #000000;"></i>
+                  {{/if}}
+                  {{#if this.smoke}}
+                    <i class="fa-solid fa-smoking" style="color: #000000;"></i>
+                  {{/if}}
+                  {{#if this.tv}}
+                    <i class="fa-solid fa-tv" style="color: #000000;"></i>
+                  {{/if}}
+                  {{#if this.free_wifi}}
+                    <i class="fa-solid fa-wifi" style="color: #000000;"></i>
+                  {{/if}}
+                  {{#if this.minifridge}}
+                    <i class="fa-solid fa-snowflake" style="color: #000000;"></i>
+                  {{/if}}
+                  {{#if this.breakfast}}
+                    <i class="fa-solid fa-mug-saucer" style="color: #000000;"></i>
+                  {{/if}}
+                </div>
+              </div>
               <p>
                 {{this.description}}
               </p>
               <div class="row">
                 <div class="col-md-6">
-                  <p>Price per night ${{this.price_per_night}}</p>
+                  <p>${{this.price_per_night}} per night</p>
                 </div>
                 <div class="col-md-6 align-self-center">
                   <form action="/book" method="POST">
