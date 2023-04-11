@@ -1,13 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const { connection } = require("../config/db");
+const { pool } = require("../config/db");
 const bcrypt = require("bcryptjs");
 
 // Connect to database
-connection.connect((err) => {
-  if (err) throw err;
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+    return;
+  }
   console.log(`Connected to database on port 3306`);
 });
+
+// connection.connect((err) => {
+//   if (err) throw err;
+//   console.log(`Connected to database on port 3306`);
+// });
 
 // * ALL ROUTES * //
 // @desc        Landing Page
@@ -37,55 +45,65 @@ router.get("/login", (req, res) => {
 // @desc        Process Login Form
 // @route       POST /register
 router.post("/login", (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
-  let firstname;
-  let lastname;
-  let phonenumber;
+    pool.getConnection((err, connection) => {
 
-  // get customer info from database using email
-  let sql = `SELECT * FROM customers WHERE email='${email}';`;
-
-  connection.query(sql, function (err, result) {
-    if (err) console.log(err);
-
-    // Returns user to the home screen if email does not exist
-    if (result.length == 0) {
-      console.log("no user found");
-      return res.redirect(
-        "/login?errMsg=" + encodeURIComponent("Error Logging In")
-      );
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
     }
 
-    firstname = result[0]["fname"];
-    lastname = result[0]["lname"];
-    phonenumber = result[0]["phone"];
+    let email = req.body.email;
+    let password = req.body.password;
+    let firstname;
+    let lastname;
+    let phonenumber;
 
-    // Compare the user-entered password with the stored hashed password
-    bcrypt.compare(password, result[0]["password"], function (err, result) {
-      if (err) {
-        // Handle the error
-        console.log(err);
-      } else if (result) {
-        // Passwords match, allow user to log in
-        console.log("logged in successfully");
+    // get customer info from database using email
+    let sql = `SELECT * FROM customers WHERE email='${email}';`;
 
-        // TODO: create session
-        req.session.email = email;
-        req.session.firstname = firstname;
-        req.session.lastname = lastname;
-        req.session.phonenumber = phonenumber;
-
-        return res.redirect("/?loginSuccess=true");
-      } else {
-        // Passwords do not match, deny access
-        console.log("passwords do not match");
+    connection.query(sql, function (err, result) {
+      connection.release();
+      if (err) console.log(err);
+      // Returns user to the home screen if email does not exist
+      if (result.length == 0) {
+        console.log("no user found");
         return res.redirect(
-          "/login?loginFailure=true"
+          "/login?errMsg=" + encodeURIComponent("Error Logging In")
         );
       }
-    }); // end of bcrypt compare
-  }); // end of sql query command
+
+      firstname = result[0]["fname"];
+      lastname = result[0]["lname"];
+      phonenumber = result[0]["phone"];
+
+      // Compare the user-entered password with the stored hashed password
+      bcrypt.compare(password, result[0]["password"], function (err, result) {
+        if (err) {
+          // Handle the error
+          console.log(err);
+        } else if (result) {
+          // Passwords match, allow user to log in
+          console.log("logged in successfully");
+
+          // TODO: create session
+          req.session.email = email;
+          req.session.firstname = firstname;
+          req.session.lastname = lastname;
+          req.session.phonenumber = phonenumber;
+
+          return res.redirect("/?loginSuccess=true");
+        } else {
+          // Passwords do not match, deny access
+          console.log("passwords do not match");
+          return res.redirect(
+            "/login?loginFailure=true"
+          );
+        }
+      }); // end of bcrypt compare
+    }); // end of sql query command
+  }); // end of pool.getConnection
+
 }); // end of login form post
 
 // @desc        Logout
@@ -106,71 +124,82 @@ router.get("/reservations", (req, res) => {
   // Get users reservations from database
   const currentEmail = req.session.email;
 
-  const sql = `SELECT rooms.*, reservations.*, img_urls.img_urls
-                      FROM reservations
-                      JOIN rooms ON reservations.roomId = rooms.roomId
-                      JOIN (
-                        SELECT roomId, GROUP_CONCAT(img_url SEPARATOR ', ') AS img_urls
-                        FROM room_imgs
-                        GROUP BY roomId
-                      ) AS img_urls ON img_urls.roomId = rooms.roomId
-                      WHERE email = '${currentEmail}'
-                      ORDER BY reservations.check_in_date`;
+    pool.getConnection((err, connection) => {
 
-  connection.query(sql, function (err, result) {
-    if (err) {
-      console.log(err);
-    }
-
-    result.forEach((room) => {
-      room.img_urls = room.img_urls.split(", ");
-      const startDate = new Date(room.check_in_date);
-      const endDate = new Date(room.check_out_date);
-
-      const timeDiff = endDate.getTime() - startDate.getTime();
-      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-      const sDate = startDate.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      }); // returns "Wed Apr 05 2023"
-      const eDate = endDate.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      }); // returns "Wed Apr 05 2023"
-
-      room.check_in_date = sDate;
-      room.check_out_date = eDate;
-      room.days = daysDiff;
-    });
-
-    // Check if check-out date has passed and remove reservation from database
-    result.forEach((room) => {
-      const endDate = new Date(room.check_out_date);
-      const today = new Date();
-
-      if (endDate < today) {
-        updateReservationStatus(room.roomId, "completed");
-        updateRoomStatus(room.roomId, "available");
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        res.status(500).send('Internal Server Error');
+        return;
       }
-    });
 
-    const bookSuccess = req.query.bookSuccess === 'true';
-    const cancelSuccess = req.query.cancelSuccess === 'true';
-    const cancelFailure = req.query.cancelFailure === 'true';
+      const sql = `SELECT rooms.*, reservations.*, img_urls.img_urls
+                          FROM reservations
+                          JOIN rooms ON reservations.roomId = rooms.roomId
+                          JOIN (
+                            SELECT roomId, GROUP_CONCAT(img_url SEPARATOR ', ') AS img_urls
+                            FROM room_imgs
+                            GROUP BY roomId
+                          ) AS img_urls ON img_urls.roomId = rooms.roomId
+                          WHERE email = '${currentEmail}'
+                          ORDER BY reservations.check_in_date`;
 
-    res.render("reservations", { 
-      reservations: result, 
-      bookSuccess, 
-      cancelSuccess, 
-      cancelFailure, 
-      currentPage: "manage-reservations" 
-    });
-  }); // end connection
+      connection.query(sql, function (err, result) {
+        connection.release();
+
+        if (err) {
+          console.log(err);
+        }
+
+        result.forEach((room) => {
+          room.img_urls = room.img_urls.split(", ");
+          const startDate = new Date(room.check_in_date);
+          const endDate = new Date(room.check_out_date);
+
+          const timeDiff = endDate.getTime() - startDate.getTime();
+          const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+          const sDate = startDate.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }); // returns "Wed Apr 05 2023"
+          const eDate = endDate.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }); // returns "Wed Apr 05 2023"
+
+          room.check_in_date = sDate;
+          room.check_out_date = eDate;
+          room.days = daysDiff;
+        });
+
+        // Check if check-out date has passed and remove reservation from database
+        result.forEach((room) => {
+          const endDate = new Date(room.check_out_date);
+          const today = new Date();
+
+          if (endDate < today) {
+            updateReservationStatus(room.roomId, "completed");
+            updateRoomStatus(room.roomId, "available");
+          }
+        });
+
+        const bookSuccess = req.query.bookSuccess === 'true';
+        const cancelSuccess = req.query.cancelSuccess === 'true';
+        const cancelFailure = req.query.cancelFailure === 'true';
+
+        res.render("reservations", { 
+          reservations: result, 
+          bookSuccess, 
+          cancelSuccess, 
+          cancelFailure, 
+          currentPage: "manage-reservations" 
+        });
+      }); // end connection
+  }); // end pool.getConnection
 }); // end get reservations
 
 // @desc        Register
@@ -199,60 +228,71 @@ router.post("/book", (req, res) => {
 // @desc        Search For Rooms
 // @route       GET /search
 router.get("/search", (req, res) => {
-  // query database for rooms
-  let num_guests = req.query.num_guests;
-  let check_in = req.query.check_in_date;
-  let check_out = req.query.check_out_date;
+  pool.getConnection((err, connection) => {
 
-  if (check_out <= check_in) {
-    return res.redirect("/?errMsg=" + encodeURIComponent("Invalid Dates"));
-  }
-
-  //WHERE check_out<today
-  //JOIN reservations
-  let sql = `SELECT rooms.*, GROUP_CONCAT(room_imgs.img_url SEPARATOR ', ') AS img_urls, amenities.*
-                  FROM rooms
-                  JOIN room_imgs ON rooms.roomId = room_imgs.roomId
-                  JOIN amenities ON amenities.roomId = rooms.roomId
-                  WHERE max_guests >= ${num_guests} AND availability = "available"
-                  GROUP BY rooms.roomId;`;
-
-  let roomsArr = [];
-
-  connection.query(sql, function (err, result) {
     if (err) {
-      console.log(err);
-      return res.redirect("/");
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
     }
 
-    roomsArr = result;
+    // query database for rooms
+    let num_guests = req.query.num_guests;
+    let check_in = req.query.check_in_date;
+    let check_out = req.query.check_out_date;
 
-    // Iterate over the rooms array and modify the img_urls property
-    roomsArr.forEach((room) => {
-      room.img_urls = room.img_urls.split(", ");
+    if (check_out <= check_in) {
+      return res.redirect("/?errMsg=" + encodeURIComponent("Invalid Dates"));
+    }
 
-      const startDate = new Date(check_in);
-      const endDate = new Date(check_out);
+    //WHERE check_out<today
+    //JOIN reservations
+    let sql = `SELECT rooms.*, GROUP_CONCAT(room_imgs.img_url SEPARATOR ', ') AS img_urls, amenities.*
+                    FROM rooms
+                    JOIN room_imgs ON rooms.roomId = room_imgs.roomId
+                    JOIN amenities ON amenities.roomId = rooms.roomId
+                    WHERE max_guests >= ${num_guests} AND availability = "available"
+                    GROUP BY rooms.roomId;`;
 
-      const timeDiff = endDate.getTime() - startDate.getTime();
-      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    let roomsArr = [];
 
-      room.days = daysDiff;
-      room.check_in = check_in;
-      room.check_out = check_out;
-      room.total_guests = num_guests;
-    });
+    connection.query(sql, function (err, result) {
+      connection.release();
+      if (err) {
+        console.log(err);
+        return res.redirect("/");
+      }
 
-    console.log(roomsArr);
+      roomsArr = result;
 
-    // Render Page
-    res.render("rooms", { rooms: roomsArr });
-  }); // end connection
+      // Iterate over the rooms array and modify the img_urls property
+      roomsArr.forEach((room) => {
+        room.img_urls = room.img_urls.split(", ");
+
+        const startDate = new Date(check_in);
+        const endDate = new Date(check_out);
+
+        const timeDiff = endDate.getTime() - startDate.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        room.days = daysDiff;
+        room.check_in = check_in;
+        room.check_out = check_out;
+        room.total_guests = num_guests;
+      });
+
+      console.log(roomsArr);
+
+      // Render Page
+      res.render("rooms", { rooms: roomsArr });
+    }); // end connection
+  }); // end pool.getConnection
 });
 
 // @desc        Process Register Form
 // @route       POST /register
 router.post("/register", async (req, res) => {
+
   let email = req.body.email;
   let password1 = req.body.password1;
   let password2 = req.body.password2;
@@ -276,28 +316,38 @@ router.post("/register", async (req, res) => {
   // Hash the password using the salt
   const hashedPassword = await bcrypt.hash(password1, salt);
 
-  let sql = generateRegisterCmd(
-    email,
-    hashedPassword,
-    firstname,
-    lastname,
-    phonenumber
-  );
+  pool.getConnection((err, connection) => {
 
-  connection.query(sql, function (err, result) {
-    if (err) {
-      console.log(err);
-      return res.redirect("/register?registerFailure=true");
-    }
+      if (err) {
+        console.error('Error connecting to the database:', err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
 
-    // TODO: create session
-    req.session.email = email;
-    req.session.firstname = firstname;
-    req.session.lastname = lastname;
-    req.session.phonenumber = phonenumber;
+      let sql = generateRegisterCmd(
+        email,
+        hashedPassword,
+        firstname,
+        lastname,
+        phonenumber
+      );
 
-    res.redirect("/?registerSuccess=true"); // go to home page
-  }); // end connection
+      connection.query(sql, function (err, result) {
+        connection.release();
+        if (err) {
+          console.log(err);
+          return res.redirect("/register?registerFailure=true");
+        }
+
+        // TODO: create session
+        req.session.email = email;
+        req.session.firstname = firstname;
+        req.session.lastname = lastname;
+        req.session.phonenumber = phonenumber;
+
+        res.redirect("/?registerSuccess=true"); // go to home page
+      }); // end connection
+  }); // end pool.getConnection
 }); // end router post
 
 // @desc        Process Pay Form
@@ -313,20 +363,28 @@ router.post("/process-pay", (req, res) => {
   const email = req.body.email;
   const stat = "booked";
 
-  // Add entry into the reservations table
-  // Needs: roomID, email, totalPayment, checkInDate, checkOutDate, totalGuests,  cc_num, and stat
-  const sql = `INSERT INTO reservations (roomId, email, totalPayment, cc_num, check_in_date, check_out_date, total_guests, stat) 
-                        VALUES('${roomId}', '${email}', '${totalPayment}', '${cc_num}', '${check_in_date}', 
-                        '${check_out_date}', '${total_guests}', '${stat}');`;
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    // Add entry into the reservations table
+    // Needs: roomID, email, totalPayment, checkInDate, checkOutDate, totalGuests,  cc_num, and stat
+    const sql = `INSERT INTO reservations (roomId, email, totalPayment, cc_num, check_in_date, check_out_date, total_guests, stat) 
+                          VALUES('${roomId}', '${email}', '${totalPayment}', '${cc_num}', '${check_in_date}', 
+                          '${check_out_date}', '${total_guests}', '${stat}');`;
 
-  connection.query(sql, function (err, result) {
-    if (err) console.log(err);
-    console.log("1 record inserted into reservations table.");
+    connection.query(sql, function (err, result) {
+      connection.release();
+      if (err) console.log(err);
+      console.log("1 record inserted into reservations table.");
 
-    updateRoomStatus(roomId, "not available");
+      updateRoomStatus(roomId, "not available");
 
-    res.redirect("/reservations?bookSuccess=true");
-  });
+      res.redirect("/reservations?bookSuccess=true");
+    });
+  }); // end pool.getConnection
 });
 
 // @desc        Process Cancel Res Form
@@ -357,16 +415,26 @@ const generateRegisterCmd = (email, password, fname, lname, phone) =>
 const signUpPasswords = (password1, password2) => password1 === password2;
 
 const checkUsedEmails = (email) => {
-  let sql = `SELECT COUNT(*) AS EmailCount FROM customers WHERE email='${email}'`;
+  pool.getConnection((err, connection) => {
 
-  connection.query(sql, function (err, result) {
-    if (err) console.log(err);
-
-    if (result[0]["EmailCount"] >= 1) {
-      console.log("email already in use");
-      return true;
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
     }
-    return false;
+
+    let sql = `SELECT COUNT(*) AS EmailCount FROM customers WHERE email='${email}'`;
+
+    connection.query(sql, function (err, result) {
+      connection.release();
+      if (err) console.log(err);
+
+      if (result[0]["EmailCount"] >= 1) {
+        console.log("email already in use");
+        return true;
+      }
+      return false;
+    });
   });
 };
 
@@ -434,28 +502,55 @@ const amenetiesHelper = (amenetiesNum) => {
 
 //provides all reservations that are booked
 const reservationsList = (email) => {
-  let sql = `SELECT customers.email,customers.fname,customers.lname,customers.phone,reservations.roomid,reservations.status from customers LEFT JOIN reservations on customers.email=reservations.email  where customers.email ='${email}'`;
-  connection.query(sql, function (err, result) {
-    if (err) console.log(err);
-    return false;
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    let sql = `SELECT customers.email,customers.fname,customers.lname,customers.phone,reservations.roomid,reservations.status from customers LEFT JOIN reservations on customers.email=reservations.email  where customers.email ='${email}'`;
+    connection.query(sql, function (err, result) {
+      connection.release();
+      if (err) console.log(err);
+      return false;
+    });
   });
 };
 
 const updateReservationStatus = (roomId, stat) => {
-  let sql = `UPDATE reservations SET stat='${stat}' WHERE roomId=${roomId} AND stat='booked';`;
+  pool.getConnection((err, connection) => {
 
-  connection.query(sql, function (err, result) {
-    if (err) console.log(err);
-    
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    let sql = `UPDATE reservations SET stat='${stat}' WHERE roomId=${roomId} AND stat='booked';`;
+
+    connection.query(sql, function (err, result) {
+      connection.release();
+      if (err) console.log(err);
+      
+    });
   });
 };
 
 const updateRoomStatus = (roomId, stat) => {
-  let sql = `UPDATE rooms SET availability='${stat}' WHERE roomId=${roomId};`;
+  pool.getConnection((err, connection) => {
 
-  connection.query(sql, function (err, result) {
-    if (err) console.log(err);
-   
+    if (err) {
+      console.error('Error connecting to the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    let sql = `UPDATE rooms SET availability='${stat}' WHERE roomId=${roomId};`;
+
+    connection.query(sql, function (err, result) {
+      connection.release();
+      if (err) console.log(err);
+    
+    });
   });
 };
 
