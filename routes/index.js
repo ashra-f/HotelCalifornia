@@ -242,7 +242,15 @@ router.get("/search", (req, res) => {
     let check_out = req.query.check_out_date;
 
     if (check_out <= check_in) {
-      return res.redirect("/?errMsg=" + encodeURIComponent("Invalid Dates"));
+      return res.redirect("/?errMsg=" + encodeURIComponent("Invalid Dates: Check-out date must be after check-in date"));
+    }
+
+    // check is check_in date is in the past
+    const today = new Date();
+    const startDate = new Date(check_in);
+
+    if (startDate < today) {
+      return res.redirect("/?errMsg=" + encodeURIComponent("Invalid Dates: Check-in date must not be in the past"));
     }
 
     //WHERE check_out<today
