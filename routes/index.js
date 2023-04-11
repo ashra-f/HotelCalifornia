@@ -12,11 +12,6 @@ pool.getConnection((err, connection) => {
   console.log(`Connected to database on port 3306`);
 });
 
-// connection.connect((err) => {
-//   if (err) throw err;
-//   console.log(`Connected to database on port 3306`);
-// });
-
 // * ALL ROUTES * //
 // @desc        Landing Page
 // @route       GET /
@@ -206,10 +201,12 @@ router.get("/reservations", (req, res) => {
 // @route       GET /register
 router.get("/register", (req, res) => {
   const registerSuccess = req.query.registerSuccess === 'false';
+  const passwordsDontMatch = req.query.passwordsDontMatch === 'true';
 
   res.render("register", {
     layout: "login",
     registerSuccess,
+    passwordsDontMatch
   });
 });
 
@@ -245,7 +242,7 @@ router.get("/search", (req, res) => {
       return res.redirect("/?errMsg=" + encodeURIComponent("Invalid Dates: Check-out date must be after check-in date"));
     }
 
-    // check is check_in date is in the past
+    // check if check_in date is in the past
     const today = new Date();
     const startDate = new Date(check_in);
 
@@ -315,7 +312,7 @@ router.post("/register", async (req, res) => {
 
   // Redirects back to register page if passwords don't match
   if (!signUpPasswords(password1, password2)) {
-    return res.redirect("/register");
+    return res.redirect("/register?passwordsDontMatch=true");
   }
 
   // Generate a salt

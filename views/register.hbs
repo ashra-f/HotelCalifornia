@@ -1,6 +1,12 @@
 {{#if registerFailure}}
   <script>
-    toastr.error("Error signing up. Please try again. 😔");
+    toastr.error("Error signing up, please try again. 😔");
+  </script>
+{{/if}}
+
+{{#if passwordsDontMatch}}
+  <script>
+    toastr.error("Passwords don't match, please try again.");
   </script>
 {{/if}}
 
