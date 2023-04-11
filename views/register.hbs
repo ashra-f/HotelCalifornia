@@ -27,9 +27,12 @@
 {{! Divider }}
 <hr class="hr mb-4 mt-4" />
 
+{{!-- Error --}}
+<div id="error-message" role="alert"></div>
+
 {{! Register Form }}
 <div class="section mb-4">
-  <form class="register-form" action="/register" method="POST">
+  <form class="register-form" action="/register" method="POST" onsubmit="validateForm(event)">
 
     {{! First and Last Name }}
     <div class="row">
@@ -141,3 +144,20 @@
     &copy; 2023 Hotel California Inc.
   </p>
 </footer>
+
+<script>
+  function validateForm(event) {
+    const password1 = document.getElementById('InputPassword1').value;
+    const password2 = document.getElementById('InputPassword2').value;
+    const errorMessage = document.getElementById('error-message');
+
+    if (password1 !== password2) {
+      event.preventDefault();
+      errorMessage.textContent = 'Passwords do not match.';
+      errorMessage.classList.add('alert', 'alert-danger'); // add alert alert-danger class to errorMessage
+    } else {
+      errorMessage.textContent = ''; // Clear the error message when passwords match
+      errorMessage.classList.remove('alert', 'alert-danger'); // remove alert alert-danger class from errorMessage
+    }
+  }
+</script>

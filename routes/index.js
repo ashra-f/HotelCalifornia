@@ -64,7 +64,7 @@ router.post("/login", (req, res) => {
       if (result.length == 0) {
         console.log("no user found");
         return res.redirect(
-          "/login?errMsg=" + encodeURIComponent("Error Logging In")
+          "/login?loginFailure=true"
         );
       }
 
